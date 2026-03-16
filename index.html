@@ -1,14 +1,278 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
-  <link href='/style.css' rel='stylesheet'>
+  <title>셀프체크킷 (SELFCHK) — 무료 건강 도구 모음</title>
+  <meta name="description" content="BMI 계산기, 칼로리 계산기, 피부 타입 테스트, 수면 사이클 계산기, 스트레스 지수 테스트 — 무료로 내 몸 상태를 체크해보세요.">
+  <link href="style.css" rel="stylesheet">
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <button onclick="console.log('hello');">Press me</button>
-  <script defer type="text/javascript" src="/main.js"></script>
+
+  <!-- 헤더 -->
+  <header class="site-header">
+    <div class="container">
+      <div class="logo" onclick="showHome()">
+        <span class="logo-main">SELFCHK</span>
+        <span class="logo-sub">셀프체크킷</span>
+      </div>
+      <nav class="breadcrumb" id="breadcrumb" style="display:none;">
+        <span onclick="showHome()">홈</span>
+        <span class="sep">›</span>
+        <span id="breadcrumb-title"></span>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 홈 화면 -->
+  <main id="home" class="container">
+    <div class="hero">
+      <h1>내 몸 상태, 직접 체크해보세요</h1>
+      <p>전문 지식 없이도 쉽게 사용할 수 있는 무료 건강 도구 모음입니다.</p>
+    </div>
+
+    <div class="tool-grid">
+
+      <div class="tool-card" onclick="showTool('bmi')">
+        <div class="tool-icon">⚖️</div>
+        <h2>BMI 계산기</h2>
+        <p>키와 몸무게로 체질량지수를 계산하고 정상 범위를 확인하세요.</p>
+        <span class="tool-tag">건강</span>
+      </div>
+
+      <div class="tool-card" onclick="showTool('calorie')">
+        <div class="tool-icon">🔥</div>
+        <h2>칼로리 계산기</h2>
+        <p>성별, 나이, 활동량에 맞는 하루 권장 칼로리를 계산하세요.</p>
+        <span class="tool-tag">영양</span>
+      </div>
+
+      <div class="tool-card" onclick="showTool('skin')">
+        <div class="tool-icon">✨</div>
+        <h2>피부 타입 테스트</h2>
+        <p>나의 피부 타입을 알아보고 맞춤 케어 방법을 확인하세요.</p>
+        <span class="tool-tag">뷰티</span>
+      </div>
+
+      <div class="tool-card" onclick="showTool('sleep')">
+        <div class="tool-icon">🌙</div>
+        <h2>수면 사이클 계산기</h2>
+        <p>기상 시간이나 취침 시간으로 최적의 수면 스케줄을 찾아보세요.</p>
+        <span class="tool-tag">수면</span>
+      </div>
+
+      <div class="tool-card" onclick="showTool('stress')">
+        <div class="tool-icon">🧘</div>
+        <h2>스트레스 지수 테스트</h2>
+        <p>현재 나의 스트레스 수준을 측정하고 관리법을 알아보세요.</p>
+        <span class="tool-tag">멘탈</span>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ─── BMI 계산기 ─── -->
+  <section id="tool-bmi" class="tool-section container" style="display:none;">
+    <div class="tool-header">
+      <div class="tool-icon-lg">⚖️</div>
+      <h1>BMI 계산기</h1>
+      <p>체질량지수(BMI)는 키와 몸무게를 바탕으로 비만도를 측정하는 지표입니다.</p>
+    </div>
+    <div class="card">
+      <div class="form-group">
+        <label>키 (cm)</label>
+        <input type="number" id="bmi-height" placeholder="예: 170" min="100" max="250">
+      </div>
+      <div class="form-group">
+        <label>몸무게 (kg)</label>
+        <input type="number" id="bmi-weight" placeholder="예: 65" min="20" max="300">
+      </div>
+      <button class="btn-primary" onclick="calcBMI()">계산하기</button>
+    </div>
+    <div class="result-card" id="bmi-result" style="display:none;">
+      <div class="result-value" id="bmi-value"></div>
+      <div class="result-label" id="bmi-label"></div>
+      <div class="result-desc" id="bmi-desc"></div>
+      <div class="bmi-scale">
+        <div class="bmi-bar">
+          <div class="bmi-segment s1">저체중<br><small>&lt;18.5</small></div>
+          <div class="bmi-segment s2">정상<br><small>18.5–22.9</small></div>
+          <div class="bmi-segment s3">과체중<br><small>23–24.9</small></div>
+          <div class="bmi-segment s4">비만<br><small>≥25</small></div>
+        </div>
+        <div class="bmi-pointer-wrap"><div class="bmi-pointer" id="bmi-pointer"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 칼로리 계산기 ─── -->
+  <section id="tool-calorie" class="tool-section container" style="display:none;">
+    <div class="tool-header">
+      <div class="tool-icon-lg">🔥</div>
+      <h1>칼로리 계산기</h1>
+      <p>Mifflin-St Jeor 공식 기반으로 하루 권장 칼로리를 계산합니다.</p>
+    </div>
+    <div class="card">
+      <div class="form-group">
+        <label>성별</label>
+        <div class="radio-group">
+          <label class="radio-label"><input type="radio" name="cal-gender" value="male" checked> 남성</label>
+          <label class="radio-label"><input type="radio" name="cal-gender" value="female"> 여성</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>나이</label>
+        <input type="number" id="cal-age" placeholder="예: 28" min="10" max="100">
+      </div>
+      <div class="form-group">
+        <label>키 (cm)</label>
+        <input type="number" id="cal-height" placeholder="예: 170" min="100" max="250">
+      </div>
+      <div class="form-group">
+        <label>몸무게 (kg)</label>
+        <input type="number" id="cal-weight" placeholder="예: 65" min="20" max="300">
+      </div>
+      <div class="form-group">
+        <label>활동 수준</label>
+        <select id="cal-activity">
+          <option value="1.2">거의 안 움직임 (좌식 생활)</option>
+          <option value="1.375">가벼운 활동 (주 1–3회 운동)</option>
+          <option value="1.55" selected>보통 활동 (주 3–5회 운동)</option>
+          <option value="1.725">활발한 활동 (주 6–7회 운동)</option>
+          <option value="1.9">매우 활발 (운동선수급)</option>
+        </select>
+      </div>
+      <button class="btn-primary" onclick="calcCalorie()">계산하기</button>
+    </div>
+    <div class="result-card" id="calorie-result" style="display:none;">
+      <div class="result-value" id="calorie-tdee"></div>
+      <div class="result-label">하루 유지 칼로리 (TDEE)</div>
+      <div class="calorie-goals">
+        <div class="calorie-goal-item">
+          <span class="goal-label">체중 감량</span>
+          <span class="goal-value" id="calorie-lose"></span>
+        </div>
+        <div class="calorie-goal-item highlight">
+          <span class="goal-label">유지</span>
+          <span class="goal-value" id="calorie-maintain"></span>
+        </div>
+        <div class="calorie-goal-item">
+          <span class="goal-label">체중 증가</span>
+          <span class="goal-value" id="calorie-gain"></span>
+        </div>
+      </div>
+      <p class="result-note">기초대사량(BMR): <strong id="calorie-bmr"></strong> kcal</p>
+    </div>
+  </section>
+
+  <!-- ─── 피부 타입 테스트 ─── -->
+  <section id="tool-skin" class="tool-section container" style="display:none;">
+    <div class="tool-header">
+      <div class="tool-icon-lg">✨</div>
+      <h1>피부 타입 테스트</h1>
+      <p>아래 질문에 솔직하게 답하면 나의 피부 타입을 알 수 있어요.</p>
+    </div>
+    <div id="skin-quiz">
+      <div class="quiz-progress">
+        <div class="quiz-progress-bar" id="skin-progress-bar"></div>
+      </div>
+      <p class="quiz-step" id="skin-step-label"></p>
+      <div class="card quiz-card" id="skin-question-card">
+        <p class="quiz-question" id="skin-question"></p>
+        <div class="quiz-options" id="skin-options"></div>
+      </div>
+    </div>
+    <div class="result-card" id="skin-result" style="display:none;">
+      <div class="skin-result-icon" id="skin-icon"></div>
+      <div class="result-value" id="skin-type"></div>
+      <div class="result-desc" id="skin-desc"></div>
+      <div class="skin-tips" id="skin-tips"></div>
+      <button class="btn-secondary" onclick="resetSkin()">다시 테스트하기</button>
+    </div>
+  </section>
+
+  <!-- ─── 수면 사이클 계산기 ─── -->
+  <section id="tool-sleep" class="tool-section container" style="display:none;">
+    <div class="tool-header">
+      <div class="tool-icon-lg">🌙</div>
+      <h1>수면 사이클 계산기</h1>
+      <p>수면은 약 90분 단위로 반복됩니다. 사이클에 맞춰 일어나면 개운하게 기상할 수 있어요.</p>
+    </div>
+    <div class="card">
+      <div class="sleep-tabs">
+        <button class="sleep-tab active" id="tab-wake" onclick="switchSleepTab('wake')">기상 시간으로 계산</button>
+        <button class="sleep-tab" id="tab-bed" onclick="switchSleepTab('bed')">취침 시간으로 계산</button>
+      </div>
+      <div id="sleep-wake-panel">
+        <div class="form-group">
+          <label>몇 시에 일어나야 하나요?</label>
+          <input type="time" id="sleep-wake-time" value="07:00">
+        </div>
+        <button class="btn-primary" onclick="calcSleepFromWake()">취침 시간 계산</button>
+      </div>
+      <div id="sleep-bed-panel" style="display:none;">
+        <div class="form-group">
+          <label>몇 시에 잠자리에 드나요?</label>
+          <input type="time" id="sleep-bed-time" value="23:00">
+        </div>
+        <button class="btn-primary" onclick="calcSleepFromBed()">기상 시간 계산</button>
+      </div>
+    </div>
+    <div class="result-card" id="sleep-result" style="display:none;">
+      <p class="result-label" id="sleep-result-label"></p>
+      <div class="sleep-times" id="sleep-times"></div>
+      <p class="result-note">잠드는 데 평균 <strong>14분</strong>이 소요되는 것을 반영했습니다.</p>
+    </div>
+  </section>
+
+  <!-- ─── 스트레스 지수 테스트 ─── -->
+  <section id="tool-stress" class="tool-section container" style="display:none;">
+    <div class="tool-header">
+      <div class="tool-icon-lg">🧘</div>
+      <h1>스트레스 지수 테스트</h1>
+      <p>최근 2주간의 상태를 기준으로 답해주세요.</p>
+    </div>
+    <div id="stress-quiz">
+      <div class="quiz-progress">
+        <div class="quiz-progress-bar" id="stress-progress-bar"></div>
+      </div>
+      <p class="quiz-step" id="stress-step-label"></p>
+      <div class="card quiz-card" id="stress-question-card">
+        <p class="quiz-question" id="stress-question"></p>
+        <div class="quiz-options" id="stress-options"></div>
+      </div>
+    </div>
+    <div class="result-card" id="stress-result" style="display:none;">
+      <div class="stress-meter">
+        <svg viewBox="0 0 200 110" class="gauge">
+          <path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="#eee" stroke-width="16" stroke-linecap="round"/>
+          <path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#grad)" stroke-width="16" stroke-linecap="round"
+                stroke-dasharray="251.2" id="gauge-fill" stroke-dashoffset="251.2"/>
+          <defs>
+            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:#4ade80"/>
+              <stop offset="50%" style="stop-color:#facc15"/>
+              <stop offset="100%" style="stop-color:#f87171"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="gauge-value" id="stress-score-display"></div>
+      </div>
+      <div class="result-value" id="stress-level"></div>
+      <div class="result-desc" id="stress-desc"></div>
+      <div class="stress-tips" id="stress-tips"></div>
+      <button class="btn-secondary" onclick="resetStress()">다시 테스트하기</button>
+    </div>
+  </section>
+
+  <!-- 푸터 -->
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>SELFCHK 셀프체크킷</strong> — 무료 건강 도구 모음</p>
+      <p class="footer-note">본 사이트의 결과는 참고용이며 의학적 진단을 대체하지 않습니다.</p>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
 </body>
 </html>
