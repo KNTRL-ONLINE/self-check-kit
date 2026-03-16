@@ -1,4 +1,4 @@
-/* ─── 기본 설정 ─── */
+/* ─── 기본 설정 (라이트 모드) ─── */
 :root {
   --primary: #6366f1;
   --primary-light: #818cf8;
@@ -8,10 +8,30 @@
   --bg: #f8f9fc;
   --card-bg: #ffffff;
   --border: #e5e7eb;
+  --header-bg: #ffffff;
+  --footer-bg: #ffffff;
+  --input-bg: #ffffff;
   --radius: 16px;
   --radius-sm: 10px;
   --shadow: 0 2px 16px rgba(0,0,0,0.07);
   --shadow-hover: 0 8px 32px rgba(99,102,241,0.15);
+}
+
+/* ─── 다크 모드 ─── */
+[data-theme="dark"] {
+  --primary: #818cf8;
+  --primary-light: #a5b4fc;
+  --primary-bg: #1e1e3a;
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --bg: #0f0f23;
+  --card-bg: #1a1a2e;
+  --border: #2d2d44;
+  --header-bg: #1a1a2e;
+  --footer-bg: #1a1a2e;
+  --input-bg: #0f0f23;
+  --shadow: 0 2px 16px rgba(0,0,0,0.3);
+  --shadow-hover: 0 8px 32px rgba(129,140,248,0.2);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -25,6 +45,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  transition: background 0.3s, color 0.3s;
 }
 
 /* ─── 레이아웃 ─── */
@@ -32,18 +53,133 @@ body {
 
 /* ─── 헤더 ─── */
 .site-header {
-  background: #fff;
+  background: var(--header-bg);
   border-bottom: 1px solid var(--border);
   position: sticky; top: 0; z-index: 100;
+  transition: background 0.3s, border-color 0.3s;
 }
-.site-header .container { display: flex; align-items: center; gap: 16px; height: 60px; }
-.logo { display: flex; align-items: baseline; gap: 8px; cursor: pointer; user-select: none; }
+.site-header .container {
+  display: flex; align-items: center; gap: 16px; height: 60px;
+}
+.logo {
+  display: flex; align-items: baseline; gap: 8px;
+  cursor: pointer; user-select: none; flex-shrink: 0;
+}
 .logo-main { font-size: 1.25rem; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; }
 .logo-sub { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
-.breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 0.875rem; color: var(--text-muted); }
+.breadcrumb {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.875rem; color: var(--text-muted); flex: 1;
+}
 .breadcrumb span:first-child { cursor: pointer; color: var(--primary); }
 .breadcrumb span:first-child:hover { text-decoration: underline; }
 .sep { color: var(--border); }
+
+/* ─── 헤더 액션 버튼들 ─── */
+.header-actions {
+  display: flex; align-items: center; gap: 8px; margin-left: auto; flex-shrink: 0;
+}
+.btn-history {
+  padding: 6px 12px; background: var(--primary-bg); color: var(--primary);
+  border: 1px solid var(--primary-light); border-radius: var(--radius-sm);
+  font-size: 0.8rem; font-weight: 600; font-family: inherit; cursor: pointer;
+  transition: background 0.2s, opacity 0.2s; white-space: nowrap;
+}
+.btn-history:hover { opacity: 0.8; }
+.lang-toggle {
+  display: flex; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden;
+}
+.lang-btn {
+  padding: 5px 10px; background: transparent; color: var(--text-muted);
+  border: none; font-size: 0.78rem; font-weight: 700; font-family: inherit;
+  cursor: pointer; transition: background 0.2s, color 0.2s;
+}
+.lang-btn.active { background: var(--primary); color: #fff; }
+.lang-btn:not(.active):hover { background: var(--primary-bg); color: var(--primary); }
+.theme-toggle {
+  width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border);
+  background: transparent; font-size: 1.1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, border-color 0.2s;
+}
+.theme-toggle:hover { background: var(--primary-bg); border-color: var(--primary-light); }
+
+/* ─── 토스트 ─── */
+.toast {
+  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
+  background: #1e1e2e; color: #fff; padding: 12px 24px; border-radius: 999px;
+  font-size: 0.875rem; font-weight: 600; z-index: 9999;
+  opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none;
+  white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+[data-theme="dark"] .toast { background: #e2e8f0; color: #1e1e2e; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ─── 공유 오버레이 ─── */
+.share-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  z-index: 500; display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.share-overlay-box {
+  background: var(--card-bg); border-radius: var(--radius); padding: 40px 32px;
+  max-width: 380px; width: 90%; text-align: center; position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: fadeUp 0.3s ease;
+}
+.share-overlay-close {
+  position: absolute; top: 16px; right: 20px; font-size: 1.2rem;
+  cursor: pointer; color: var(--text-muted); line-height: 1;
+}
+.share-overlay-close:hover { color: var(--text); }
+.share-overlay-label {
+  font-size: 0.78rem; font-weight: 700; color: var(--primary); text-transform: uppercase;
+  letter-spacing: 1px; margin-bottom: 16px;
+}
+.share-result-icon { font-size: 3rem; margin-bottom: 8px; }
+.share-result-value { font-size: 2rem; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+.share-result-label { font-size: 0.9rem; color: var(--text-muted); }
+
+/* ─── 히스토리 페이지 ─── */
+.history-date-group { margin-bottom: 28px; }
+.history-date-label {
+  font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;
+  letter-spacing: 0.5px; margin-bottom: 12px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.history-item {
+  background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 16px 20px; margin-bottom: 10px; display: flex; align-items: center; gap: 16px;
+  transition: border-color 0.2s;
+}
+.history-item:hover { border-color: var(--primary-light); }
+.history-item-icon { font-size: 1.8rem; flex-shrink: 0; }
+.history-item-body { flex: 1; min-width: 0; }
+.history-item-value { font-size: 1.1rem; font-weight: 800; color: var(--primary); }
+.history-item-label { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
+.history-item-time { font-size: 0.75rem; color: var(--text-muted); flex-shrink: 0; }
+.history-empty {
+  text-align: center; padding: 60px 20px; color: var(--text-muted); font-size: 0.9rem;
+}
+.history-empty .history-empty-icon { font-size: 3rem; margin-bottom: 12px; }
+.btn-danger { color: #ef4444; border-color: #ef4444; }
+.btn-danger:hover { background: rgba(239,68,68,0.08); }
+
+/* ─── 결과 액션 버튼들 ─── */
+.result-actions {
+  display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; justify-content: center;
+}
+.action-btn {
+  padding: 10px 18px; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600;
+  font-family: inherit; cursor: pointer; border: 1.5px solid var(--border);
+  background: var(--card-bg); color: var(--text); transition: all 0.2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.action-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-bg); }
+.action-btn.kakao {
+  background: #FEE500; color: #391B1B; border-color: #FEE500;
+}
+.action-btn.kakao:hover { background: #f0d800; border-color: #f0d800; color: #391B1B; }
 
 /* ─── 히어로 ─── */
 .hero { text-align: center; padding: 56px 0 40px; }
@@ -75,8 +211,14 @@ body {
 .tool-card:hover::before { opacity: 1; }
 .tool-icon { font-size: 2rem; margin-bottom: 14px; }
 .tool-card h2 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
-.tool-card p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px; }
-.tool-tag { display: inline-block; background: var(--primary-bg); color: var(--primary); font-size: 0.75rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; }
+.tool-card p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 10px; }
+.tool-tag {
+  display: inline-block; background: var(--primary-bg); color: var(--primary);
+  font-size: 0.75rem; font-weight: 600; padding: 3px 10px; border-radius: 999px;
+}
+.tool-usage {
+  font-size: 0.72rem; color: var(--text-muted); margin-top: 8px; font-weight: 500;
+}
 
 /* ─── 툴 섹션 ─── */
 .tool-section { padding: 40px 0 80px; flex: 1; }
@@ -90,6 +232,7 @@ body {
 .card {
   background: var(--card-bg); border: 1px solid var(--border);
   border-radius: var(--radius); padding: 32px; box-shadow: var(--shadow); margin-bottom: 24px;
+  transition: background 0.3s, border-color 0.3s;
 }
 .form-group { margin-bottom: 20px; }
 .form-group label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 8px; }
@@ -98,7 +241,8 @@ body {
   width: 100%; padding: 12px 16px;
   border: 1.5px solid var(--border); border-radius: var(--radius-sm);
   font-size: 1rem; font-family: inherit; color: var(--text);
-  background: #fff; transition: border-color 0.2s; -webkit-appearance: none;
+  background: var(--input-bg); transition: border-color 0.2s, background 0.3s, color 0.3s;
+  -webkit-appearance: none;
 }
 .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); }
 .radio-group { display: flex; gap: 20px; }
@@ -112,6 +256,7 @@ body {
   font-family: inherit; cursor: pointer; transition: background 0.2s, transform 0.1s; margin-top: 4px;
 }
 .btn-primary:hover { background: #4f52d9; }
+[data-theme="dark"] .btn-primary:hover { background: #6366f1; }
 .btn-primary:active { transform: scale(0.98); }
 .btn-secondary {
   padding: 11px 28px; background: transparent; color: var(--primary);
@@ -126,6 +271,7 @@ body {
   background: var(--card-bg); border: 1.5px solid var(--primary-light);
   border-radius: var(--radius); padding: 36px 32px; box-shadow: var(--shadow);
   text-align: center; animation: fadeUp 0.4s ease;
+  transition: background 0.3s, border-color 0.3s;
 }
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(16px); }
@@ -138,16 +284,29 @@ body {
 
 /* ─── BMI ─── */
 .bmi-scale { margin-top: 28px; }
-.bmi-bar { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; border-radius: 8px; overflow: hidden; font-size: 0.72rem; font-weight: 600; text-align: center; }
+.bmi-bar {
+  display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
+  border-radius: 8px; overflow: hidden; font-size: 0.72rem; font-weight: 600; text-align: center;
+}
 .bmi-segment { padding: 8px 4px; color: #fff; line-height: 1.3; }
 .bmi-segment small { opacity: 0.85; font-weight: 400; }
-.s1 { background: #60a5fa; } .s2 { background: #4ade80; } .s3 { background: #facc15; color: #7a5800; } .s4 { background: #f87171; }
+.s1 { background: #60a5fa; } .s2 { background: #4ade80; }
+.s3 { background: #facc15; color: #7a5800; } .s4 { background: #f87171; }
 .bmi-pointer-wrap { position: relative; height: 16px; margin-top: 4px; }
-.bmi-pointer { position: absolute; top: 0; transform: translateX(-50%); width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 14px solid var(--text); transition: left 0.6s cubic-bezier(.34,1.56,.64,1); }
+.bmi-pointer {
+  position: absolute; top: 0; transform: translateX(-50%);
+  width: 0; height: 0; border-left: 7px solid transparent;
+  border-right: 7px solid transparent; border-bottom: 14px solid var(--text);
+  transition: left 0.6s cubic-bezier(.34,1.56,.64,1);
+}
 
 /* ─── 칼로리 ─── */
 .calorie-goals { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 20px 0 4px; }
-.calorie-goal-item { background: var(--bg); border-radius: var(--radius-sm); padding: 14px 8px; display: flex; flex-direction: column; gap: 6px; }
+.calorie-goal-item {
+  background: var(--bg); border-radius: var(--radius-sm); padding: 14px 8px;
+  display: flex; flex-direction: column; gap: 6px;
+  transition: background 0.3s;
+}
 .calorie-goal-item.highlight { background: var(--primary-bg); border: 1.5px solid var(--primary-light); }
 .goal-label { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; }
 .goal-value { font-size: 1.1rem; font-weight: 800; color: var(--text); }
@@ -155,7 +314,10 @@ body {
 
 /* ─── 물 섭취량 ─── */
 .water-cups { font-size: 1.6rem; margin: 12px 0 8px; letter-spacing: 2px; }
-.water-tips { background: var(--bg); border-radius: var(--radius-sm); padding: 18px 20px; margin-top: 20px; text-align: left; }
+.water-tips {
+  background: var(--bg); border-radius: var(--radius-sm); padding: 18px 20px;
+  margin-top: 20px; text-align: left; transition: background 0.3s;
+}
 .water-tips h3 { font-size: 0.875rem; font-weight: 700; margin-bottom: 10px; }
 .water-tips ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
 .water-tips li { font-size: 0.85rem; color: var(--text-muted); padding-left: 16px; position: relative; line-height: 1.5; }
@@ -163,23 +325,37 @@ body {
 
 /* ─── 나이·생존일수 ─── */
 .age-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; text-align: center; }
-.age-stat-item { background: var(--bg); border-radius: var(--radius-sm); padding: 16px 12px; }
+.age-stat-item {
+  background: var(--bg); border-radius: var(--radius-sm); padding: 16px 12px;
+  transition: background 0.3s;
+}
 .age-stat-value { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
 .age-stat-label { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
 
 /* ─── 퀴즈 공통 ─── */
 .quiz-progress { height: 5px; background: var(--border); border-radius: 999px; margin-bottom: 14px; overflow: hidden; }
-.quiz-progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-light)); border-radius: 999px; transition: width 0.4s ease; width: 0%; }
+.quiz-progress-bar {
+  height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  border-radius: 999px; transition: width 0.4s ease; width: 0%;
+}
 .quiz-step { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px; font-weight: 500; }
 .quiz-card { padding: 28px; }
 .quiz-question { font-size: 1rem; font-weight: 700; margin-bottom: 20px; line-height: 1.5; }
 .quiz-options { display: flex; flex-direction: column; gap: 10px; }
-.quiz-option { width: 100%; padding: 13px 18px; background: #fff; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 0.9rem; font-family: inherit; color: var(--text); cursor: pointer; text-align: left; transition: border-color 0.15s, background 0.15s; }
+.quiz-option {
+  width: 100%; padding: 13px 18px; background: var(--input-bg);
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  font-size: 0.9rem; font-family: inherit; color: var(--text);
+  cursor: pointer; text-align: left; transition: border-color 0.15s, background 0.15s;
+}
 .quiz-option:hover { border-color: var(--primary); background: var(--primary-bg); }
 
 /* ─── 번아웃 결과 ─── */
 .burnout-icon { font-size: 3.5rem; margin-bottom: 8px; }
-.burnout-tips { background: var(--bg); border-radius: var(--radius-sm); padding: 18px 20px; margin-top: 20px; text-align: left; }
+.burnout-tips {
+  background: var(--bg); border-radius: var(--radius-sm); padding: 18px 20px;
+  margin-top: 20px; text-align: left; transition: background 0.3s;
+}
 .burnout-tips h3 { font-size: 0.875rem; font-weight: 700; margin-bottom: 10px; }
 .burnout-tips ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
 .burnout-tips li { font-size: 0.85rem; color: var(--text-muted); padding-left: 16px; position: relative; line-height: 1.5; }
@@ -187,21 +363,35 @@ body {
 
 /* ─── 연봉 ─── */
 .salary-bar-wrap { margin: 24px 0 16px; }
-.salary-bar { position: relative; height: 20px; background: linear-gradient(90deg, #60a5fa, #4ade80, #facc15, #f87171); border-radius: 999px; overflow: visible; }
+.salary-bar {
+  position: relative; height: 20px;
+  background: linear-gradient(90deg, #60a5fa, #4ade80, #facc15, #f87171);
+  border-radius: 999px; overflow: visible;
+}
 .salary-fill { position: absolute; top: 0; left: 0; height: 100%; background: rgba(0,0,0,0.15); border-radius: 999px; }
-.salary-marker { position: absolute; top: -6px; width: 3px; height: 32px; background: var(--text); border-radius: 2px; transform: translateX(-50%); transition: left 0.6s cubic-bezier(.34,1.56,.64,1); }
+.salary-marker {
+  position: absolute; top: -6px; width: 3px; height: 32px;
+  background: var(--text); border-radius: 2px; transform: translateX(-50%);
+  transition: left 0.6s cubic-bezier(.34,1.56,.64,1);
+}
 .salary-bar-labels { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; }
 
 /* ─── 돈 성격 결과 ─── */
 .money-icon { font-size: 3.5rem; margin-bottom: 8px; }
-.money-tips { background: var(--bg); border-radius: var(--radius-sm); padding: 18px 20px; margin-top: 20px; text-align: left; }
+.money-tips {
+  background: var(--bg); border-radius: var(--radius-sm); padding: 18px 20px;
+  margin-top: 20px; text-align: left; transition: background 0.3s;
+}
 .money-tips h3 { font-size: 0.875rem; font-weight: 700; margin-bottom: 10px; }
 .money-tips ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
 .money-tips li { font-size: 0.85rem; color: var(--text-muted); padding-left: 16px; position: relative; line-height: 1.5; }
 .money-tips li::before { content: '·'; position: absolute; left: 4px; color: var(--primary); font-weight: 700; }
 
 /* ─── 푸터 ─── */
-.site-footer { background: #fff; border-top: 1px solid var(--border); padding: 28px 0; margin-top: auto; }
+.site-footer {
+  background: var(--footer-bg); border-top: 1px solid var(--border);
+  padding: 28px 0; margin-top: auto; transition: background 0.3s, border-color 0.3s;
+}
 .site-footer p { text-align: center; font-size: 0.85rem; color: var(--text-muted); }
 .site-footer strong { color: var(--text); }
 .footer-note { font-size: 0.75rem !important; margin-top: 4px; }
@@ -215,4 +405,9 @@ body {
   .age-stats { grid-template-columns: 1fr 1fr; }
   .result-value { font-size: 2.2rem; }
   .bmi-bar { font-size: 0.65rem; }
+  .header-actions { gap: 6px; }
+  .btn-history span { display: none; }
+  .btn-history::before { content: '💾'; }
+  .result-actions { gap: 8px; }
+  .action-btn { padding: 9px 14px; font-size: 0.8rem; }
 }
