@@ -238,7 +238,7 @@ const TRANSLATIONS = {
     'action.save_history': '💾 내 기록 저장',
     'action.save_image': '📷 이미지로 저장',
     'action.copy_link': '🔗 링크 복사',
-    'action.kakao': '💬 카카오 공유',
+    'action.kakao': '📤 URL 공유',
     // 히스토리
     'history.title': '내 기록',
     'history.subtitle': '저장된 결과를 날짜별로 확인하세요.',
@@ -493,7 +493,7 @@ const TRANSLATIONS = {
     'action.save_history': '💾 Save Result',
     'action.save_image': '📷 Save as Image',
     'action.copy_link': '🔗 Copy Link',
-    'action.kakao': '💬 Kakao Share',
+    'action.kakao': '📤 Share URL',
     // History
     'history.title': 'My History',
     'history.subtitle': 'View your saved results grouped by date.',
@@ -690,34 +690,29 @@ function renderHistoryPage() {
 
 /* ─── 공유 기능 ─── */
 function copyShareLink(toolId, icon, value, label) {
-  const payload = btoa(JSON.stringify({ t: toolId, v: value, l: label, i: icon }));
+  const payload = btoa(unescape(encodeURIComponent(JSON.stringify({ t: toolId, v: value, l: label, i: icon }))));
   const url = window.location.href.split('#')[0] + '#share=' + payload;
-  navigator.clipboard.writeText(url).then(() => {
-    showToast(t('toast.link_copied'));
-  }).catch(() => {
-    // fallback
+  function doCopy() {
     const ta = document.createElement('textarea');
-    ta.value = url; ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta); ta.select();
+    ta.value = url;
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none;';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
     document.execCommand('copy');
     document.body.removeChild(ta);
     showToast(t('toast.link_copied'));
-  });
+  }
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(url).then(() => showToast(t('toast.link_copied'))).catch(doCopy);
+  } else {
+    doCopy();
+  }
 }
 
 function shareKakao(icon, value, label) {
-  if (typeof Kakao === 'undefined' || !Kakao.isInitialized()) {
-    try { Kakao.init('YOUR_KAKAO_APP_KEY'); } catch(e) {}
-  }
-  try {
-    Kakao.Share.sendDefault({
-      objectType: 'text',
-      text: `${icon} ${value} — ${label}\n\nSELFCHK 셀프체크킷에서 확인했어요!`,
-      link: { mobileWebUrl: window.location.href, webUrl: window.location.href }
-    });
-  } catch(e) {
-    showToast(currentLang === 'ko' ? '카카오 공유를 사용할 수 없습니다.' : 'Kakao share unavailable.');
-  }
+  // 카카오 앱키 없이 URL 복사로 대체
+  copyShareLink('share', icon, decodeURIComponent(value), decodeURIComponent(label));
 }
 
 function checkShareHash() {
@@ -744,19 +739,20 @@ function saveAsImage(resultEl, toolId) {
     alert('html2canvas 라이브러리를 불러오지 못했습니다.');
     return;
   }
+  const scale = (window.devicePixelRatio || 1) * 2;
   html2canvas(resultEl, {
     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--card-bg').trim() || '#ffffff',
-    scale: 2,
+    scale: scale,
     logging: false,
     useCORS: true
   }).then(canvas => {
     // 워터마크 추가
     const ctx = canvas.getContext('2d');
-    ctx.font = `bold ${Math.max(16, canvas.width * 0.025)}px Arial, sans-serif`;
+    ctx.font = `bold ${Math.max(24, canvas.width * 0.025)}px Arial, sans-serif`;
     ctx.fillStyle = 'rgba(99, 102, 241, 0.35)';
     ctx.textAlign = 'right';
     ctx.textBaseline = 'bottom';
-    ctx.fillText('SELFCHK', canvas.width - 16, canvas.height - 12);
+    ctx.fillText('SELFCHK', canvas.width - 24, canvas.height - 20);
 
     const link = document.createElement('a');
     link.download = `selfchk-${toolId}-${Date.now()}.png`;
