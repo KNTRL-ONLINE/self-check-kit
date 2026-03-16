@@ -1056,9 +1056,13 @@ function renderBurnoutQuestion() {
     btn.className = 'quiz-option';
     btn.textContent = opt.text;
     btn.onclick = () => {
+      document.querySelectorAll('#burnout-options .quiz-option').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
       burnoutScore += opt.score;
       burnoutStep++;
-      burnoutStep >= total ? showBurnoutResult() : renderBurnoutQuestion();
+      setTimeout(() => {
+        burnoutStep >= total ? showBurnoutResult() : renderBurnoutQuestion();
+      }, 300);
     };
     el.appendChild(btn);
   });
@@ -1253,9 +1257,13 @@ function renderMoneyQuestion() {
     btn.className = 'quiz-option';
     btn.textContent = opt.text;
     btn.onclick = () => {
+      document.querySelectorAll('#money-options .quiz-option').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
       moneyScores[opt.type]++;
       moneyStep++;
-      moneyStep >= total ? showMoneyResult() : renderMoneyQuestion();
+      setTimeout(() => {
+        moneyStep >= total ? showMoneyResult() : renderMoneyQuestion();
+      }, 300);
     };
     el.appendChild(btn);
   });
