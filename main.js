@@ -592,14 +592,10 @@ function showToast(msg) {
 }
 
 /* ─── 사용 횟수 카운터 ─── */
-const BASE_COUNTS = {
-  bmi: 15420, calorie: 12380, water: 8940,
-  age: 6730, burnout: 11820, salary: 19540, money: 9870
-};
+const TOOL_IDS = ['bmi', 'calorie', 'water', 'age', 'burnout', 'salary', 'money'];
 
 function getUsageCount(toolId) {
-  const local = parseInt(localStorage.getItem('selfchk_count_' + toolId) || '0', 10);
-  return BASE_COUNTS[toolId] + local;
+  return parseInt(localStorage.getItem('selfchk_count_' + toolId) || '0', 10);
 }
 
 function incrementUsage(toolId) {
@@ -616,7 +612,7 @@ function renderUsageCount(toolId) {
 }
 
 function renderAllUsageCounts() {
-  Object.keys(BASE_COUNTS).forEach(id => renderUsageCount(id));
+  TOOL_IDS.forEach(id => renderUsageCount(id));
 }
 
 /* ─── 결과 히스토리 ─── */
