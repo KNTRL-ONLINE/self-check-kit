@@ -236,7 +236,6 @@ const TRANSLATIONS = {
     'money.tip.giver4': '가족·지인을 위한 지출 한도를 미리 정해두면 좋습니다',
     // 결과 액션 버튼
     'action.save_history': '💾 내 기록 저장',
-    'action.save_image': '📷 이미지로 저장',
     'action.copy_link': '🔗 링크 복사',
     'action.kakao': '📤 URL 공유',
     // 히스토리
@@ -496,7 +495,6 @@ const TRANSLATIONS = {
     'money.tip.giver4': 'Set spending limits for family and friends in advance',
     // Result action buttons
     'action.save_history': '💾 Save Result',
-    'action.save_image': '📷 Save as Image',
     'action.copy_link': '🔗 Copy Link',
     'action.kakao': '📤 Share URL',
     // History
@@ -801,72 +799,6 @@ function closeShareOverlay() {
   window.location.hash = '';
 }
 
-/* ─── 이미지로 저장 ─── */
-function saveAsImage(resultEl, toolId) {
-  if (typeof html2canvas === 'undefined') {
-    alert('html2canvas 라이브러리를 불러오지 못했습니다.');
-    return;
-  }
-
-  // getComputedStyle은 CSS 변수를 이미 해석한 실제 값을 반환함
-  // 모든 하위 요소에 인라인으로 직접 적용 → html2canvas가 var() 없이 정확히 렌더링
-  const INLINE_PROPS = [
-    'color', 'background-color',
-    'font-size', 'font-weight', 'font-family', 'line-height', 'letter-spacing', 'text-align',
-    'border-top', 'border-right', 'border-bottom', 'border-left', 'border-radius',
-    'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
-    'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
-    'display', 'flex-direction', 'flex-wrap', 'flex', 'gap',
-    'align-items', 'justify-content', 'grid-template-columns',
-    'width', 'min-width', 'max-width', 'position', 'top', 'left', 'right', 'bottom',
-    'transform', 'opacity', 'overflow',
-  ];
-
-  function inlineComputedStyles(original, clone) {
-    const cs = getComputedStyle(original);
-    INLINE_PROPS.forEach(prop => {
-      const val = cs.getPropertyValue(prop);
-      if (val) clone.style.setProperty(prop, val);
-    });
-    for (let i = 0; i < original.children.length; i++) {
-      inlineComputedStyles(original.children[i], clone.children[i]);
-    }
-  }
-
-  const bgColor = getComputedStyle(resultEl).backgroundColor || '#111111';
-  const scale = (window.devicePixelRatio || 1) * 2;
-
-  // 화면 밖에 인라인 스타일이 적용된 클론을 생성
-  const wrapper = document.createElement('div');
-  wrapper.style.cssText = `position:fixed;left:-9999px;top:0;background:${bgColor};padding:0;margin:0;`;
-  const clone = resultEl.cloneNode(true);
-  inlineComputedStyles(resultEl, clone);
-  wrapper.appendChild(clone);
-  document.body.appendChild(wrapper);
-
-  html2canvas(wrapper, {
-    backgroundColor: bgColor,
-    scale: scale,
-    logging: false,
-    useCORS: true,
-  }).then(canvas => {
-    document.body.removeChild(wrapper);
-    // 워터마크 추가
-    const ctx = canvas.getContext('2d');
-    ctx.font = `bold ${Math.max(24, canvas.width * 0.025)}px Arial, sans-serif`;
-    ctx.fillStyle = 'rgba(99, 102, 241, 0.35)';
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'bottom';
-    ctx.fillText('SELFCHK', canvas.width - 24, canvas.height - 20);
-
-    const link = document.createElement('a');
-    link.download = `selfchk-${toolId}-${Date.now()}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  }).catch(() => {
-    if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
-  });
-}
 
 /* ─── 결과 액션 버튼 렌더링 ─── */
 function showResultActions(resultEl, toolId, { icon, value, label }) {
@@ -879,10 +811,7 @@ function showResultActions(resultEl, toolId, { icon, value, label }) {
     <button class="action-btn" onclick="saveToHistoryAndRefresh('${toolId}','${icon}','${encodeURIComponent(value)}','${encodeURIComponent(label)}')">
       ${t('action.save_history')}
     </button>
-    <button class="action-btn" onclick="saveAsImage(document.getElementById('${toolId}-result'),'${toolId}')">
-      ${t('action.save_image')}
-    </button>
-    <button class="action-btn" onclick="copyShareLink('${toolId}','${icon}','${encodeURIComponent(value)}','${encodeURIComponent(label)}')">
+<button class="action-btn" onclick="copyShareLink('${toolId}','${icon}','${encodeURIComponent(value)}','${encodeURIComponent(label)}')">
       ${t('action.copy_link')}
     </button>
     <p class="result-disclaimer">${t('result.disclaimer')}</p>
