@@ -744,8 +744,10 @@ function saveAsImage(resultEl, toolId) {
     return;
   }
   const scale = (window.devicePixelRatio || 1) * 2;
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+  const bgColor = currentTheme === 'dark' ? '#111111' : '#ffffff';
   html2canvas(resultEl, {
-    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--card-bg').trim() || '#111111',
+    backgroundColor: bgColor,
     scale: scale,
     logging: false,
     useCORS: true,
@@ -753,7 +755,10 @@ function saveAsImage(resultEl, toolId) {
     scrollX: 0,
     windowHeight: document.documentElement.scrollHeight,
     height: resultEl.scrollHeight,
-    width: resultEl.scrollWidth
+    width: resultEl.scrollWidth,
+    onclone: (clonedDoc) => {
+      clonedDoc.documentElement.setAttribute('data-theme', currentTheme);
+    }
   }).then(canvas => {
     // 워터마크 추가
     const ctx = canvas.getContext('2d');
