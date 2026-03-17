@@ -243,6 +243,10 @@ const TRANSLATIONS = {
     'history.title': '내 기록',
     'history.subtitle': '저장된 결과를 날짜별로 확인하세요.',
     'history.clear_all': '전체 삭제',
+    'history.select': '선택',
+    'history.cancel_select': '취소',
+    'history.delete_selected': '선택 삭제',
+    'history.selected_count': '{0}개 선택됨',
     'history.empty': '아직 저장된 기록이 없어요.\n각 도구에서 결과를 저장해보세요!',
     // 공유
     'share.shared_result': '공유된 결과',
@@ -499,6 +503,10 @@ const TRANSLATIONS = {
     'history.title': 'My History',
     'history.subtitle': 'View your saved results grouped by date.',
     'history.clear_all': 'Clear All',
+    'history.select': 'Select',
+    'history.cancel_select': 'Cancel',
+    'history.delete_selected': 'Delete Selected',
+    'history.selected_count': '{0} selected',
     'history.empty': 'No saved results yet.\nSave a result from any tool!',
     // Share
     'share.shared_result': 'Shared Result',
@@ -620,6 +628,8 @@ function renderAllUsageCounts() {
 /* ─── 결과 히스토리 ─── */
 const HISTORY_KEY = 'selfchk_history';
 const HISTORY_MAX = 50;
+let historySelectMode = false;
+let selectedTimestamps = new Set();
 
 function getHistory() {
   try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); }
@@ -640,13 +650,60 @@ function saveToHistory(toolId, icon, value, label) {
 function clearAllHistory() {
   if (!confirm(currentLang === 'ko' ? '정말 전체 기록을 삭제할까요?' : 'Delete all history?')) return;
   localStorage.removeItem(HISTORY_KEY);
+  historySelectMode = false;
+  selectedTimestamps.clear();
   renderHistoryPage();
   showToast(t('toast.history_cleared'));
+}
+
+function toggleSelectMode() {
+  historySelectMode = !historySelectMode;
+  selectedTimestamps.clear();
+  renderHistoryPage();
+}
+
+function toggleHistoryItem(timestamp) {
+  if (selectedTimestamps.has(timestamp)) {
+    selectedTimestamps.delete(timestamp);
+  } else {
+    selectedTimestamps.add(timestamp);
+  }
+  renderHistoryPage();
+}
+
+function deleteSelectedHistory() {
+  const count = selectedTimestamps.size;
+  if (count === 0) return;
+  const msg = currentLang === 'ko' ? `선택한 ${count}개 기록을 삭제할까요?` : `Delete ${count} selected record(s)?`;
+  if (!confirm(msg)) return;
+  const history = getHistory().filter(item => !selectedTimestamps.has(item.timestamp));
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  selectedTimestamps.clear();
+  historySelectMode = false;
+  renderHistoryPage();
+  showToast(currentLang === 'ko' ? `${count}개 기록이 삭제됐어요.` : `${count} record(s) deleted.`);
 }
 
 function renderHistoryPage() {
   const list = document.getElementById('history-list');
   const history = getHistory();
+
+  // 선택 모드 툴바 업데이트
+  const toolbar = document.getElementById('history-toolbar');
+  if (toolbar) {
+    const selCount = selectedTimestamps.size;
+    toolbar.innerHTML = historySelectMode
+      ? `<span class="history-select-info">${t('history.selected_count').replace('{0}', selCount)}</span>
+         <div style="display:flex;gap:8px;">
+           <button class="btn-secondary btn-danger" onclick="deleteSelectedHistory()" ${selCount === 0 ? 'disabled' : ''}>${t('history.delete_selected')}</button>
+           <button class="btn-secondary" onclick="toggleSelectMode()">${t('history.cancel_select')}</button>
+         </div>`
+      : `<div></div>
+         <div style="display:flex;gap:8px;">
+           ${history.length > 0 ? `<button class="btn-secondary" onclick="toggleSelectMode()">${t('history.select')}</button>` : ''}
+           <button class="btn-secondary btn-danger" onclick="clearAllHistory()" data-i18n="history.clear_all">${t('history.clear_all')}</button>
+         </div>`;
+  }
 
   if (history.length === 0) {
     list.innerHTML = `<div class="history-empty">
@@ -674,7 +731,14 @@ function renderHistoryPage() {
         currentLang === 'ko' ? 'ko-KR' : 'en-US',
         { hour: '2-digit', minute: '2-digit' }
       );
-      return `<div class="history-item">
+      const isSelected = selectedTimestamps.has(item.timestamp);
+      const selectClass = historySelectMode ? ' selectable' + (isSelected ? ' selected' : '') : '';
+      const clickAttr = historySelectMode ? `onclick="toggleHistoryItem('${item.timestamp}')"` : '';
+      const checkbox = historySelectMode
+        ? `<div class="history-checkbox${isSelected ? ' checked' : ''}"></div>`
+        : '';
+      return `<div class="history-item${selectClass}" ${clickAttr}>
+        ${checkbox}
         <div class="history-item-icon">${item.icon}</div>
         <div class="history-item-body">
           <div class="history-item-value">${item.value}</div>
@@ -758,6 +822,11 @@ function saveAsImage(resultEl, toolId) {
     width: resultEl.scrollWidth,
     onclone: (clonedDoc) => {
       clonedDoc.documentElement.setAttribute('data-theme', currentTheme);
+      if (currentTheme === 'dark') {
+        const style = clonedDoc.createElement('style');
+        style.textContent = '[data-theme="dark"] { --text: #F0F0F0 !important; --text-muted: #AAAAAA !important; --border: #333333 !important; }';
+        clonedDoc.head.appendChild(style);
+      }
     }
   }).then(canvas => {
     // 워터마크 추가
@@ -845,6 +914,8 @@ function showHistory() {
   document.getElementById('history-page').style.display = '';
   document.getElementById('breadcrumb').style.display = 'flex';
   document.getElementById('breadcrumb-title').textContent = t('history.title');
+  historySelectMode = false;
+  selectedTimestamps.clear();
   renderHistoryPage();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }

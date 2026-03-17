@@ -143,6 +143,13 @@ body {
 [data-theme="dark"] .share-overlay-box { border: 1px solid rgba(255,255,255,0.1); }
 
 /* ─── 히스토리 페이지 ─── */
+.history-toolbar {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px; min-height: 36px;
+}
+.history-select-info {
+  font-size: 0.85rem; font-weight: 600; color: var(--primary);
+}
 .history-date-group { margin-bottom: 28px; }
 .history-date-label {
   font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;
@@ -152,9 +159,21 @@ body {
 .history-item {
   background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm);
   padding: 16px 20px; margin-bottom: 10px; display: flex; align-items: center; gap: 16px;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, background 0.15s;
 }
 .history-item:hover { border-color: var(--primary-light); }
+.history-item.selectable { cursor: pointer; user-select: none; }
+.history-item.selectable:hover { border-color: var(--primary); }
+.history-item.selected { border-color: var(--primary); background: var(--primary-bg); }
+.history-checkbox {
+  width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 4px;
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+}
+.history-checkbox.checked {
+  background: var(--primary); border-color: var(--primary);
+}
+.history-checkbox.checked::after { content: '✓'; color: #fff; font-size: 0.75rem; font-weight: 700; }
 .history-item-icon { font-size: 1.8rem; flex-shrink: 0; }
 .history-item-body { flex: 1; min-width: 0; }
 .history-item-value { font-size: 1.1rem; font-weight: 800; color: var(--primary); }
@@ -166,6 +185,7 @@ body {
 .history-empty .history-empty-icon { font-size: 3rem; margin-bottom: 12px; }
 .btn-danger { color: #ef4444; border-color: #ef4444; }
 .btn-danger:hover { background: rgba(239,68,68,0.08); }
+.btn-secondary:disabled { opacity: 0.35; cursor: not-allowed; }
 
 /* ─── 결과 액션 버튼들 ─── */
 .result-actions {
