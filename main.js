@@ -807,45 +807,50 @@ function saveAsImage(resultEl, toolId) {
     alert('html2canvas 라이브러리를 불러오지 못했습니다.');
     return;
   }
-  const scale = (window.devicePixelRatio || 1) * 2;
-  const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
 
-  // 라이브 문서에서 CSS 변수 실제 값을 미리 읽어둠
-  const liveStyle = getComputedStyle(document.documentElement);
-  const cssVars = ['--primary','--primary-light','--primary-bg','--text','--text-muted',
-                   '--bg','--card-bg','--border','--input-bg','--radius','--radius-sm',
-                   '--shadow','--shadow-hover'];
-  const resolved = {};
-  cssVars.forEach(v => { resolved[v] = liveStyle.getPropertyValue(v).trim(); });
+  // getComputedStyle은 CSS 변수를 이미 해석한 실제 값을 반환함
+  // 모든 하위 요소에 인라인으로 직접 적용 → html2canvas가 var() 없이 정확히 렌더링
+  const INLINE_PROPS = [
+    'color', 'background-color',
+    'font-size', 'font-weight', 'font-family', 'line-height', 'letter-spacing', 'text-align',
+    'border-top', 'border-right', 'border-bottom', 'border-left', 'border-radius',
+    'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
+    'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
+    'display', 'flex-direction', 'flex-wrap', 'flex', 'gap',
+    'align-items', 'justify-content', 'grid-template-columns',
+    'width', 'min-width', 'max-width', 'position', 'top', 'left', 'right', 'bottom',
+    'transform', 'opacity', 'overflow',
+  ];
 
-  // 이미지 가독성을 위해 muted 텍스트 대비 강화
-  if (currentTheme === 'dark') {
-    resolved['--text']       = '#F0F0F0';
-    resolved['--text-muted'] = '#AAAAAA';
-    resolved['--border']     = '#333333';
+  function inlineComputedStyles(original, clone) {
+    const cs = getComputedStyle(original);
+    INLINE_PROPS.forEach(prop => {
+      const val = cs.getPropertyValue(prop);
+      if (val) clone.style.setProperty(prop, val);
+    });
+    for (let i = 0; i < original.children.length; i++) {
+      inlineComputedStyles(original.children[i], clone.children[i]);
+    }
   }
 
-  const bgColor = resolved['--card-bg'] || (currentTheme === 'dark' ? '#111111' : '#ffffff');
+  const bgColor = getComputedStyle(resultEl).backgroundColor || '#111111';
+  const scale = (window.devicePixelRatio || 1) * 2;
 
-  html2canvas(resultEl, {
+  // 화면 밖에 인라인 스타일이 적용된 클론을 생성
+  const wrapper = document.createElement('div');
+  wrapper.style.cssText = `position:fixed;left:-9999px;top:0;background:${bgColor};padding:0;margin:0;`;
+  const clone = resultEl.cloneNode(true);
+  inlineComputedStyles(resultEl, clone);
+  wrapper.appendChild(clone);
+  document.body.appendChild(wrapper);
+
+  html2canvas(wrapper, {
     backgroundColor: bgColor,
     scale: scale,
     logging: false,
     useCORS: true,
-    scrollY: -window.scrollY,
-    scrollX: 0,
-    windowHeight: document.documentElement.scrollHeight,
-    height: resultEl.scrollHeight,
-    width: resultEl.scrollWidth,
-    onclone: (clonedDoc) => {
-      clonedDoc.documentElement.setAttribute('data-theme', currentTheme);
-      // 실제 해석된 값을 루트 인라인 스타일로 직접 주입 → var() 참조가 항상 올바르게 해석됨
-      const clonedRoot = clonedDoc.documentElement;
-      Object.entries(resolved).forEach(([name, val]) => {
-        if (val) clonedRoot.style.setProperty(name, val);
-      });
-    }
   }).then(canvas => {
+    document.body.removeChild(wrapper);
     // 워터마크 추가
     const ctx = canvas.getContext('2d');
     ctx.font = `bold ${Math.max(24, canvas.width * 0.025)}px Arial, sans-serif`;
@@ -858,6 +863,8 @@ function saveAsImage(resultEl, toolId) {
     link.download = `selfchk-${toolId}-${Date.now()}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
+  }).catch(() => {
+    if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
   });
 }
 
