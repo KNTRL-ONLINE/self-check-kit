@@ -260,6 +260,7 @@ const TRANSLATIONS = {
     'alert.age_invalid': '생년월일을 입력해주세요.',
     'alert.age_future': '생년월일이 오늘보다 미래입니다.',
     'alert.salary_invalid': '연봉을 입력해주세요.',
+    'result.disclaimer': '본 결과는 참고용이며 전문가 상담을 대체하지 않습니다.',
   },
   en: {
     // Navigation
@@ -515,6 +516,7 @@ const TRANSLATIONS = {
     'alert.age_invalid': 'Please enter your date of birth.',
     'alert.age_future': 'Date of birth cannot be in the future.',
     'alert.salary_invalid': 'Please enter your salary.',
+    'result.disclaimer': 'Results are for reference only and do not replace professional advice.',
   }
 };
 
@@ -576,7 +578,7 @@ function toggleTheme() {
 }
 
 function initTheme() {
-  const saved = localStorage.getItem('selfchk_theme') || 'light';
+  const saved = localStorage.getItem('selfchk_theme') || 'dark';
   document.documentElement.setAttribute('data-theme', saved);
   document.getElementById('theme-toggle').textContent = saved === 'dark' ? '☀️' : '🌙';
 }
@@ -690,7 +692,9 @@ function renderHistoryPage() {
 
 /* ─── 공유 기능 ─── */
 function copyShareLink(toolId, icon, value, label) {
-  const payload = btoa(unescape(encodeURIComponent(JSON.stringify({ t: toolId, v: value, l: label, i: icon }))));
+  const decodedValue = decodeURIComponent(value);
+  const decodedLabel = decodeURIComponent(label);
+  const payload = btoa(unescape(encodeURIComponent(JSON.stringify({ t: toolId, v: decodedValue, l: decodedLabel, i: icon }))));
   const url = window.location.href.split('#')[0] + '#share=' + payload;
   function doCopy() {
     const ta = document.createElement('textarea');
@@ -741,10 +745,15 @@ function saveAsImage(resultEl, toolId) {
   }
   const scale = (window.devicePixelRatio || 1) * 2;
   html2canvas(resultEl, {
-    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--card-bg').trim() || '#ffffff',
+    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--card-bg').trim() || '#111111',
     scale: scale,
     logging: false,
-    useCORS: true
+    useCORS: true,
+    scrollY: -window.scrollY,
+    scrollX: 0,
+    windowHeight: document.documentElement.scrollHeight,
+    height: resultEl.scrollHeight,
+    width: resultEl.scrollWidth
   }).then(canvas => {
     // 워터마크 추가
     const ctx = canvas.getContext('2d');
@@ -781,6 +790,7 @@ function showResultActions(resultEl, toolId, { icon, value, label }) {
     <button class="action-btn kakao" onclick="shareKakao('${icon}','${encodeURIComponent(value)}','${encodeURIComponent(label)}')">
       ${t('action.kakao')}
     </button>
+    <p class="result-disclaimer">${t('result.disclaimer')}</p>
   `;
 }
 
