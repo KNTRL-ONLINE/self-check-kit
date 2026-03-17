@@ -11,7 +11,7 @@ const TRANSLATIONS = {
     'nav.home': '홈',
     'nav.history': '💾 기록',
     // 홈
-    'home.headline': '나를 숫자로 확인하세요',
+    'home.headline': '나를\n숫자로',
     'home.subheadline': '무료 자가진단 도구 7가지 — 건강부터 돈 성격까지',
     // 공통
     'common.calculate': '계산하기',
@@ -270,7 +270,7 @@ const TRANSLATIONS = {
     'nav.home': 'Home',
     'nav.history': '💾 History',
     // Home
-    'home.headline': 'Know Yourself with Numbers',
+    'home.headline': 'Know\nYourself',
     'home.subheadline': '7 free self-check tools — from health to money personality',
     // Common
     'common.calculate': 'Calculate',
@@ -1331,6 +1331,45 @@ function showMoneyResult() {
 
 function resetMoney() { initMoney(); }
 
+/* ─── 인트로 애니메이션 ─── */
+function initIntro() {
+  const overlay = document.getElementById('intro-overlay');
+  if (!overlay) return;
+  // 공유 링크 진입 시 인트로 건너뜀
+  if (window.location.hash && window.location.hash.startsWith('#share:')) {
+    overlay.classList.add('hidden');
+    return;
+  }
+  const circle = overlay.querySelector('.intro-circle');
+  // 짧은 딜레이 후 원 확장 시작
+  setTimeout(() => {
+    circle.classList.add('expand');
+  }, 150);
+  // 원 확장 후 오버레이 페이드 아웃
+  setTimeout(() => {
+    overlay.classList.add('fade-out');
+  }, 900);
+  // 애니메이션 완료 후 오버레이 숨김
+  setTimeout(() => {
+    overlay.classList.add('hidden');
+  }, 1500);
+}
+
+/* ─── 스크롤 리빌 ─── */
+function initScrollReveal() {
+  const elements = document.querySelectorAll('[data-reveal]');
+  if (!elements.length) return;
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  elements.forEach(el => observer.observe(el));
+}
+
 /* ─── 초기화 ─── */
 (function init() {
   initTheme();
@@ -1341,4 +1380,6 @@ function resetMoney() { initMoney(); }
   applyI18n();
   renderAllUsageCounts();
   checkShareHash();
+  initIntro();
+  initScrollReveal();
 })();

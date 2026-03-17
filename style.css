@@ -215,20 +215,6 @@ body {
 .action-btn:hover { border-color: var(--text); color: var(--text); }
 [data-theme="dark"] .action-btn:hover { border-color: var(--primary); color: var(--primary); }
 
-/* ─── 히어로 ─── */
-.hero {
-  text-align: left; padding: 100px 0 80px;
-  border-bottom: 1px solid var(--border); margin-bottom: 0;
-}
-.hero h1 {
-  font-size: 4rem; font-weight: 900; letter-spacing: -3px;
-  line-height: 1.0; margin-bottom: 24px; text-transform: uppercase;
-}
-[data-theme="dark"] .hero h1 { color: #FFFFFF; }
-.hero p {
-  font-size: 0.75rem; color: var(--text-muted);
-  letter-spacing: 2px; text-transform: uppercase;
-}
 
 /* ─── 툴 그리드 ─── */
 .tool-grid {
@@ -250,7 +236,6 @@ body {
 .tool-card::before { display: none; }
 .tool-card:hover { background: var(--card-bg); transform: none; box-shadow: none; }
 [data-theme="dark"] .tool-card:hover { background: #0D0D0D; border-color: transparent; box-shadow: none; }
-.tool-icon { font-size: 1.8rem; margin-bottom: 20px; }
 .tool-card h2 {
   font-size: 0.9rem; font-weight: 800; margin-bottom: 10px;
   letter-spacing: 0.5px; text-transform: uppercase;
@@ -485,11 +470,82 @@ body {
 .site-footer strong { color: var(--text); font-weight: 900; letter-spacing: 2px; }
 .footer-note { margin-top: 6px !important; }
 
+/* ─── 인트로 오버레이 ─── */
+.intro-overlay {
+  position: fixed; inset: 0; background: #000;
+  z-index: 9999; display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.intro-overlay.fade-out {
+  animation: introOverlayFade 0.55s ease forwards;
+}
+.intro-overlay.hidden { display: none; }
+.intro-circle {
+  width: 56px; height: 56px; border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%; opacity: 0;
+}
+.intro-circle.expand {
+  animation: introCircleExpand 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes introCircleExpand {
+  0%   { opacity: 0; transform: scale(0.6); }
+  18%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 1; transform: scale(55); }
+}
+@keyframes introOverlayFade {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* ─── 히어로 (리디자인) ─── */
+.hero {
+  text-align: left; padding: 140px 0 100px;
+  border-bottom: 1px solid var(--border); margin-bottom: 0;
+}
+.hero-eyebrow {
+  font-size: 0.68rem; font-weight: 700; color: var(--text-muted);
+  letter-spacing: 3px; text-transform: uppercase; margin-bottom: 32px;
+}
+.hero h1 {
+  font-size: 8rem; font-weight: 900; letter-spacing: -6px;
+  line-height: 0.92; margin-bottom: 40px; text-transform: uppercase;
+  white-space: pre-line;
+}
+[data-theme="dark"] .hero h1 { color: #FFFFFF; }
+.hero-sub {
+  font-size: 0.75rem; color: var(--text-muted);
+  letter-spacing: 2px; text-transform: uppercase;
+}
+
+/* ─── 툴 카드 번호 ─── */
+.tool-number {
+  font-size: 0.65rem; font-weight: 700; color: var(--text-muted);
+  letter-spacing: 3px; margin-bottom: 24px; font-variant-numeric: tabular-nums;
+}
+
+/* ─── 스크롤 리빌 ─── */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.75s ease, transform 0.75s ease;
+}
+[data-reveal].revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+.tool-card[data-reveal]:nth-child(1) { transition-delay: 0s; }
+.tool-card[data-reveal]:nth-child(2) { transition-delay: 0.07s; }
+.tool-card[data-reveal]:nth-child(3) { transition-delay: 0.14s; }
+.tool-card[data-reveal]:nth-child(4) { transition-delay: 0.21s; }
+.tool-card[data-reveal]:nth-child(5) { transition-delay: 0.28s; }
+.tool-card[data-reveal]:nth-child(6) { transition-delay: 0.35s; }
+.tool-card[data-reveal]:nth-child(7) { transition-delay: 0.42s; }
+
 /* ─── 반응형 ─── */
 @media (max-width: 640px) {
   .container { padding: 0 24px; }
-  .hero { padding: 64px 0 48px; }
-  .hero h1 { font-size: 2.4rem; letter-spacing: -2px; }
+  .hero { padding: 80px 0 60px; }
+  .hero h1 { font-size: 4.2rem; letter-spacing: -3px; }
   .tool-grid { grid-template-columns: 1fr; }
   .card, .result-card { padding: 40px 0; }
   .calorie-goals { grid-template-columns: 1fr; }

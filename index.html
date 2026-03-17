@@ -9,6 +9,11 @@
 </head>
 <body>
 
+  <!-- ─── 인트로 오버레이 ─── -->
+  <div id="intro-overlay" class="intro-overlay">
+    <div class="intro-circle"></div>
+  </div>
+
   <!-- ─── 헤더 ─── -->
   <header class="site-header">
     <div class="container">
@@ -62,62 +67,63 @@
 
   <!-- ─── 홈 ─── -->
   <main id="home" class="container">
-    <div class="hero">
-      <h1 data-i18n="home.headline">나를 숫자로 확인하세요</h1>
-      <p data-i18n="home.subheadline">무료 자가진단 도구 7가지 — 건강부터 돈 성격까지</p>
+    <div class="hero" data-reveal>
+      <p class="hero-eyebrow">SELFCHK · 셀프체크킷</p>
+      <h1 data-i18n="home.headline">나를 숫자로</h1>
+      <p class="hero-sub" data-i18n="home.subheadline">무료 자가진단 도구 7가지 — 건강부터 돈 성격까지</p>
     </div>
     <div class="tool-grid">
 
-      <div class="tool-card" onclick="showTool('bmi')">
-        <div class="tool-icon">⚖️</div>
+      <div class="tool-card" onclick="showTool('bmi')" data-reveal>
+        <div class="tool-number">01</div>
         <h2 data-i18n="tool.bmi.name">BMI 계산기</h2>
         <p data-i18n="tool.bmi.desc">키·몸무게로 체질량지수와 비만도를 확인하세요.</p>
         <span class="tool-tag" data-i18n="tag.health">건강</span>
         <div class="tool-usage" id="usage-bmi"></div>
       </div>
 
-      <div class="tool-card" onclick="showTool('calorie')">
-        <div class="tool-icon">🔥</div>
+      <div class="tool-card" onclick="showTool('calorie')" data-reveal>
+        <div class="tool-number">02</div>
         <h2 data-i18n="tool.calorie.name">칼로리 계산기</h2>
         <p data-i18n="tool.calorie.desc">나이·성별·활동량으로 하루 권장 칼로리를 계산하세요.</p>
         <span class="tool-tag" data-i18n="tag.nutrition">영양</span>
         <div class="tool-usage" id="usage-calorie"></div>
       </div>
 
-      <div class="tool-card" onclick="showTool('water')">
-        <div class="tool-icon">💧</div>
+      <div class="tool-card" onclick="showTool('water')" data-reveal>
+        <div class="tool-number">03</div>
         <h2 data-i18n="tool.water.name">하루 물 섭취량</h2>
         <p data-i18n="tool.water.desc">몸무게 기반으로 하루 권장 수분량을 계산하세요.</p>
         <span class="tool-tag" data-i18n="tag.health">건강</span>
         <div class="tool-usage" id="usage-water"></div>
       </div>
 
-      <div class="tool-card" onclick="showTool('age')">
-        <div class="tool-icon">🗓️</div>
+      <div class="tool-card" onclick="showTool('age')" data-reveal>
+        <div class="tool-number">04</div>
         <h2 data-i18n="tool.age.name">나이·생존 일수</h2>
         <p data-i18n="tool.age.desc">생일을 입력하면 살아온 일수·시간·분을 계산합니다.</p>
         <span class="tool-tag" data-i18n="tag.fun">재미</span>
         <div class="tool-usage" id="usage-age"></div>
       </div>
 
-      <div class="tool-card" onclick="showTool('burnout')">
-        <div class="tool-icon">🧨</div>
+      <div class="tool-card" onclick="showTool('burnout')" data-reveal>
+        <div class="tool-number">05</div>
         <h2 data-i18n="tool.burnout.name">번아웃 자가진단</h2>
         <p data-i18n="tool.burnout.desc">10문항으로 지금 나의 번아웃 단계를 확인하세요.</p>
         <span class="tool-tag" data-i18n="tag.mental">멘탈</span>
         <div class="tool-usage" id="usage-burnout"></div>
       </div>
 
-      <div class="tool-card" onclick="showTool('salary')">
-        <div class="tool-icon">💰</div>
+      <div class="tool-card" onclick="showTool('salary')" data-reveal>
+        <div class="tool-number">06</div>
         <h2 data-i18n="tool.salary.name">연봉 상위 몇 %</h2>
         <p data-i18n="tool.salary.desc">내 연봉이 한국에서 상위 몇 %인지 확인하세요.</p>
         <span class="tool-tag" data-i18n="tag.finance">재무</span>
         <div class="tool-usage" id="usage-salary"></div>
       </div>
 
-      <div class="tool-card" onclick="showTool('money')">
-        <div class="tool-icon">🧠</div>
+      <div class="tool-card" onclick="showTool('money')" data-reveal>
+        <div class="tool-number">07</div>
         <h2 data-i18n="tool.money.name">돈 성격 테스트</h2>
         <p data-i18n="tool.money.desc">5문항으로 나만의 돈 성격 유형을 알아보세요.</p>
         <span class="tool-tag" data-i18n="tag.finance">재무</span>
