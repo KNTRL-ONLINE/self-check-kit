@@ -809,7 +809,24 @@ function saveAsImage(resultEl, toolId) {
   }
   const scale = (window.devicePixelRatio || 1) * 2;
   const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-  const bgColor = currentTheme === 'dark' ? '#111111' : '#ffffff';
+
+  // 라이브 문서에서 CSS 변수 실제 값을 미리 읽어둠
+  const liveStyle = getComputedStyle(document.documentElement);
+  const cssVars = ['--primary','--primary-light','--primary-bg','--text','--text-muted',
+                   '--bg','--card-bg','--border','--input-bg','--radius','--radius-sm',
+                   '--shadow','--shadow-hover'];
+  const resolved = {};
+  cssVars.forEach(v => { resolved[v] = liveStyle.getPropertyValue(v).trim(); });
+
+  // 이미지 가독성을 위해 muted 텍스트 대비 강화
+  if (currentTheme === 'dark') {
+    resolved['--text']       = '#F0F0F0';
+    resolved['--text-muted'] = '#AAAAAA';
+    resolved['--border']     = '#333333';
+  }
+
+  const bgColor = resolved['--card-bg'] || (currentTheme === 'dark' ? '#111111' : '#ffffff');
+
   html2canvas(resultEl, {
     backgroundColor: bgColor,
     scale: scale,
@@ -822,11 +839,11 @@ function saveAsImage(resultEl, toolId) {
     width: resultEl.scrollWidth,
     onclone: (clonedDoc) => {
       clonedDoc.documentElement.setAttribute('data-theme', currentTheme);
-      if (currentTheme === 'dark') {
-        const style = clonedDoc.createElement('style');
-        style.textContent = '[data-theme="dark"] { --text: #F0F0F0 !important; --text-muted: #AAAAAA !important; --border: #333333 !important; }';
-        clonedDoc.head.appendChild(style);
-      }
+      // 실제 해석된 값을 루트 인라인 스타일로 직접 주입 → var() 참조가 항상 올바르게 해석됨
+      const clonedRoot = clonedDoc.documentElement;
+      Object.entries(resolved).forEach(([name, val]) => {
+        if (val) clonedRoot.style.setProperty(name, val);
+      });
     }
   }).then(canvas => {
     // 워터마크 추가
