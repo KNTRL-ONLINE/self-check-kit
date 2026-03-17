@@ -723,7 +723,7 @@ function checkShareHash() {
   const hash = window.location.hash;
   if (!hash.startsWith('#share=')) return;
   try {
-    const payload = JSON.parse(atob(hash.slice(7)));
+    const payload = JSON.parse(decodeURIComponent(escape(atob(hash.slice(7)))));
     const overlay = document.getElementById('share-overlay');
     document.getElementById('share-overlay-icon').textContent = payload.i || '';
     document.getElementById('share-overlay-value').textContent = payload.v || '';
@@ -786,9 +786,6 @@ function showResultActions(resultEl, toolId, { icon, value, label }) {
     </button>
     <button class="action-btn" onclick="copyShareLink('${toolId}','${icon}','${encodeURIComponent(value)}','${encodeURIComponent(label)}')">
       ${t('action.copy_link')}
-    </button>
-    <button class="action-btn kakao" onclick="shareKakao('${icon}','${encodeURIComponent(value)}','${encodeURIComponent(label)}')">
-      ${t('action.kakao')}
     </button>
     <p class="result-disclaimer">${t('result.disclaimer')}</p>
   `;

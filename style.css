@@ -21,8 +21,8 @@
 [data-theme="dark"] {
   --primary: #7c7fff;
   --primary-light: #a5b4fc;
-  --primary-bg: rgba(124,127,255,0.08);
-  --text: #F2F2F2;
+  --primary-bg: rgba(124,127,255,0.1);
+  --text: #E0E0E0;
   --text-muted: #555555;
   --bg: #0A0A0A;
   --card-bg: #111111;
@@ -136,9 +136,11 @@ body {
   font-size: 0.78rem; font-weight: 700; color: var(--primary); text-transform: uppercase;
   letter-spacing: 1px; margin-bottom: 16px;
 }
-.share-result-icon { font-size: 3rem; margin-bottom: 8px; }
-.share-result-value { font-size: 2rem; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+.share-result-icon { font-size: 3rem; margin-bottom: 12px; }
+.share-result-value { font-size: 2.8rem; font-weight: 900; color: var(--primary); margin-bottom: 6px; letter-spacing: -1px; }
+[data-theme="dark"] .share-result-value { color: #FFFFFF; }
 .share-result-label { font-size: 0.9rem; color: var(--text-muted); }
+[data-theme="dark"] .share-overlay-box { border: 1px solid rgba(255,255,255,0.1); }
 
 /* ─── 히스토리 페이지 ─── */
 .history-date-group { margin-bottom: 28px; }
@@ -167,19 +169,21 @@ body {
 
 /* ─── 결과 액션 버튼들 ─── */
 .result-actions {
-  display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; justify-content: center;
+  display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; justify-content: center;
 }
 .action-btn {
-  padding: 10px 18px; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600;
+  padding: 11px 20px; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600;
   font-family: inherit; cursor: pointer; border: 1.5px solid var(--border);
   background: var(--card-bg); color: var(--text); transition: all 0.2s;
   display: flex; align-items: center; gap: 6px;
 }
 .action-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-bg); }
-.action-btn.kakao {
-  background: #FEE500; color: #391B1B; border-color: #FEE500;
+[data-theme="dark"] .action-btn {
+  background: #1A1A1A; border-color: #2A2A2A; color: #E0E0E0;
 }
-.action-btn.kakao:hover { background: #f0d800; border-color: #f0d800; color: #391B1B; }
+[data-theme="dark"] .action-btn:hover {
+  background: var(--primary); border-color: var(--primary); color: #FFFFFF;
+}
 
 /* ─── 히어로 ─── */
 .hero { text-align: center; padding: 56px 0 40px; }
@@ -222,10 +226,11 @@ body {
 }
 
 /* ─── 툴 섹션 ─── */
-.tool-section { padding: 40px 0 80px; flex: 1; }
-.tool-header { text-align: center; margin-bottom: 32px; }
+.tool-section { padding: 56px 0 100px; flex: 1; }
+.tool-header { text-align: center; margin-bottom: 40px; }
 .tool-icon-lg { font-size: 3rem; margin-bottom: 12px; }
 .tool-header h1 { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
+[data-theme="dark"] .tool-header h1 { color: #FFFFFF; }
 .tool-header p { font-size: 0.9rem; color: var(--text-muted); }
 .tool-header small { font-size: 0.78rem; }
 
@@ -270,16 +275,16 @@ body {
 /* ─── 결과 카드 ─── */
 .result-card {
   background: var(--card-bg); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 40px 32px; box-shadow: var(--shadow);
+  border-radius: var(--radius); padding: 48px 40px; box-shadow: var(--shadow);
   text-align: center; animation: fadeUp 0.4s ease;
   transition: background 0.3s, border-color 0.3s;
 }
-[data-theme="dark"] .result-card { border-color: #2A2A2A; }
+[data-theme="dark"] .result-card { border: 1px solid rgba(255,255,255,0.1); }
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.result-value { font-size: 3.8rem; font-weight: 900; color: var(--primary); letter-spacing: -2px; margin-bottom: 4px; line-height: 1; }
+.result-value { font-size: 5.5rem; font-weight: 900; color: var(--primary); letter-spacing: -3px; margin-bottom: 8px; line-height: 1; }
 [data-theme="dark"] .result-value { color: #FFFFFF; }
 .result-label { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
 .result-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
@@ -416,7 +421,7 @@ body {
   .card, .result-card { padding: 24px 20px; }
   .calorie-goals { grid-template-columns: 1fr; }
   .age-stats { grid-template-columns: 1fr 1fr; }
-  .result-value { font-size: 3rem; }
+  .result-value { font-size: 3.8rem; }
   .bmi-bar { font-size: 0.65rem; }
   .header-actions { gap: 6px; }
   .btn-history span { display: none; }
