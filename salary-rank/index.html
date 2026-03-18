@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>연봉 상위 몇 % 계산기 — 내 연봉 순위 확인 | 셀프체크킷</title>
+  <meta name="description" content="국세청 근로소득 통계(2023년 기준)로 내 연봉이 한국 근로소득자 중 상위 몇 %인지 확인하세요.">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link href="../style.css" rel="stylesheet">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XGW53X6MVT"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XGW53X6MVT');
+  </script>
+  <!-- Google AdSense -->
+  <meta name="google-adsense-account" content="ca-pub-3855392911506926">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3855392911506926" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="logo" onclick="location.href='/'">
+        <span class="logo-main">SELFCHK</span>
+        <span class="logo-sub">셀프체크킷</span>
+      </div>
+      <nav class="breadcrumb" id="breadcrumb" style="display:flex;">
+        <span onclick="location.href='/'">홈</span>
+        <span class="sep">›</span>
+        <span>연봉 상위 몇 %</span>
+      </nav>
+      <div class="header-actions">
+        <button class="btn-history" onclick="location.href='/'" title="기록 보기"><span>💾 기록</span></button>
+        <div class="lang-toggle">
+          <button id="lang-ko" class="lang-btn active" onclick="setLang('ko')">KO</button>
+          <button id="lang-en" class="lang-btn" onclick="setLang('en')">EN</button>
+        </div>
+        <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="다크/라이트 모드">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <div id="toast" class="toast"></div>
+
+  <div id="share-overlay" class="share-overlay" style="display:none;">
+    <div class="share-overlay-box">
+      <div class="share-overlay-close" onclick="closeShareOverlay()">✕</div>
+      <p class="share-overlay-label">공유된 결과</p>
+      <div id="share-overlay-icon" class="share-result-icon"></div>
+      <div id="share-overlay-value" class="share-result-value"></div>
+      <div id="share-overlay-label" class="share-result-label"></div>
+      <button class="btn-primary" style="margin-top:20px;" onclick="closeShareOverlay()">나도 해보기</button>
+    </div>
+  </div>
+
+  <section id="tool-salary" class="tool-section container">
+    <div class="tool-header">
+      <div class="tool-icon-lg">💰</div>
+      <h1 data-i18n="tool.salary.name">연봉 상위 몇 %</h1>
+      <p><span data-i18n="tool.salary.header_desc">내 연봉이 한국 근로소득자 중 상위 몇 %인지 확인하세요.</span><br><small data-i18n="tool.salary.header_note">국세청 근로소득 통계(2023년 기준) 데이터를 사용합니다.</small></p>
+    </div>
+    <div class="card">
+      <div class="form-group">
+        <label data-i18n="salary.input_label">연봉 (세전, 만 원)</label>
+        <input type="number" id="salary-input" data-i18n-placeholder="salary.input_placeholder" placeholder="예: 4000" min="0">
+      </div>
+      <button class="btn-primary" onclick="calcSalary()" data-i18n="common.calculate">계산하기</button>
+    </div>
+    <div class="result-card" id="salary-result" style="display:none;">
+      <div class="result-value" id="salary-top"></div>
+      <div class="result-label" id="salary-label"></div>
+      <div class="salary-bar-wrap">
+        <div class="salary-bar">
+          <div class="salary-fill" id="salary-fill"></div>
+          <div class="salary-marker" id="salary-marker"></div>
+        </div>
+        <div class="salary-bar-labels">
+          <span data-i18n="salary.bar_low">하위</span><span data-i18n="salary.bar_mid">중위</span><span data-i18n="salary.bar_high">상위</span>
+        </div>
+      </div>
+      <div class="result-desc" id="salary-desc"></div>
+      <p class="result-note" data-i18n="salary.note">전국 근로소득자 약 2,000만 명 기준 / 참고용 수치입니다.</p>
+    </div>
+    <div id="salary-actions" class="result-actions" style="display:none;"></div>
+  </section>
+
+  <section class="seo-section container">
+    <h2>한국 연봉 분포와 상위 % 기준</h2>
+    <p>본 계산기는 국세청의 근로소득 통계(2023년 귀속 기준)를 바탕으로 전국 근로소득자 약 2,000만 명 중 내 연봉의 위치를 보여줍니다. 한국 근로소득자의 평균 연봉은 약 4,200만 원이지만, 상위 고소득자의 영향으로 중위 연봉은 약 3,000만 원대로 낮습니다.</p>
+    <h3>연봉 상위 구간 기준</h3>
+    <p>상위 30% 기준은 약 4,500만 원, 상위 20%는 약 5,500만 원, 상위 10%는 약 7,800만 원, 상위 5%는 약 1억 원, 상위 1%는 약 2억 원 이상 수준입니다. 연봉 분포는 오른쪽 꼬리가 긴 분포(right-skewed)를 보이기 때문에 평균이 중위보다 높게 나타납니다.</p>
+    <h3>연봉 순위의 의미</h3>
+    <p>같은 연봉이라도 업종·지역·근무 형태·복지 수준에 따라 체감 차이가 크며, 본 결과는 참고용 수치입니다. 연봉 순위는 현재 내 시장 가치를 파악하고 커리어 방향을 설계하는 데 활용해보세요. 이직·협상 시 객관적인 근거 자료로 삼을 수 있습니다.</p>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>SELFCHK 셀프체크킷</strong> — 무료 자가진단 도구 모음</p>
+      <p class="footer-note">본 사이트의 결과는 참고용이며 의학적·재무적 진단을 대체하지 않습니다.</p>
+      <p class="footer-note" style="margin-top:10px !important;"><a href="../privacy.html" style="color:var(--text-muted);text-decoration:none;">개인정보처리방침</a></p>
+    </div>
+  </footer>
+
+  <script src="../main.js"></script>
+  <script>
+    function showHome() { location.href = '/'; }
+    function showHistory() { location.href = '/'; }
+  </script>
+</body>
+</html>

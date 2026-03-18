@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>나이·생존 일수 계산기 — 살아온 날 확인 | 셀프체크킷</title>
+  <meta name="description" content="생년월일을 입력하면 살아온 일수, 시간, 분을 계산합니다. 나의 인생을 숫자로 바라보세요.">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link href="../style.css" rel="stylesheet">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XGW53X6MVT"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XGW53X6MVT');
+  </script>
+  <!-- Google AdSense -->
+  <meta name="google-adsense-account" content="ca-pub-3855392911506926">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3855392911506926" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="logo" onclick="location.href='/'">
+        <span class="logo-main">SELFCHK</span>
+        <span class="logo-sub">셀프체크킷</span>
+      </div>
+      <nav class="breadcrumb" id="breadcrumb" style="display:flex;">
+        <span onclick="location.href='/'">홈</span>
+        <span class="sep">›</span>
+        <span>나이·생존 일수</span>
+      </nav>
+      <div class="header-actions">
+        <button class="btn-history" onclick="location.href='/'" title="기록 보기"><span>💾 기록</span></button>
+        <div class="lang-toggle">
+          <button id="lang-ko" class="lang-btn active" onclick="setLang('ko')">KO</button>
+          <button id="lang-en" class="lang-btn" onclick="setLang('en')">EN</button>
+        </div>
+        <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="다크/라이트 모드">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <div id="toast" class="toast"></div>
+
+  <div id="share-overlay" class="share-overlay" style="display:none;">
+    <div class="share-overlay-box">
+      <div class="share-overlay-close" onclick="closeShareOverlay()">✕</div>
+      <p class="share-overlay-label">공유된 결과</p>
+      <div id="share-overlay-icon" class="share-result-icon"></div>
+      <div id="share-overlay-value" class="share-result-value"></div>
+      <div id="share-overlay-label" class="share-result-label"></div>
+      <button class="btn-primary" style="margin-top:20px;" onclick="closeShareOverlay()">나도 해보기</button>
+    </div>
+  </div>
+
+  <section id="tool-age" class="tool-section container">
+    <div class="tool-header">
+      <div class="tool-icon-lg">🗓️</div>
+      <h1 data-i18n="tool.age.header_name">나이·생존 일수 계산기</h1>
+      <p data-i18n="tool.age.header_desc">태어난 날부터 지금까지 얼마나 살았는지 숫자로 확인해보세요.</p>
+    </div>
+    <div class="card">
+      <div class="form-group">
+        <label data-i18n="age.birth_label">생년월일</label>
+        <input type="date" id="age-birth" max="">
+      </div>
+      <button class="btn-primary" onclick="calcAge()" data-i18n="common.calculate">계산하기</button>
+    </div>
+    <div class="result-card" id="age-result" style="display:none;">
+      <div class="result-value" id="age-years"></div>
+      <div class="result-label" id="age-label"></div>
+      <div class="age-stats" id="age-stats"></div>
+    </div>
+    <div id="age-actions" class="result-actions" style="display:none;"></div>
+  </section>
+
+  <section class="seo-section container">
+    <h2>생존 일수로 보는 나의 시간</h2>
+    <p>생년월일을 입력하면 태어난 순간부터 지금까지 살아온 일수, 시간, 분, 개월수를 한눈에 확인할 수 있습니다. 평균 수명 80세를 기준으로 계산하면 약 29,200일, 700,800시간, 42,048,000분을 살게 됩니다. 매 순간이 얼마나 소중한지 숫자로 체감해보세요.</p>
+    <h3>만 나이 계산법</h3>
+    <p>만 나이는 생일이 지난 이후 한 살씩 더해지는 계산 방식입니다. 2023년 6월부터 한국 법령상 공식 나이 계산법이 만 나이로 통일되었습니다. 예를 들어 2000년 12월 1일생은 2026년 3월 현재 만 25세입니다.</p>
+    <h3>시간을 새롭게 바라보기</h3>
+    <p>생존 일수는 단순한 숫자를 넘어 남은 시간을 어떻게 쓸지 돌아보게 하는 계기가 됩니다. 오늘이 내 인생 몇 번째 날인지 알면 하루하루를 더 의미 있게 살아갈 동기가 됩니다. 소중한 가족·친구의 생존 일수도 함께 계산해보고, 특별한 날에 선물처럼 알려주세요.</p>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>SELFCHK 셀프체크킷</strong> — 무료 자가진단 도구 모음</p>
+      <p class="footer-note">본 사이트의 결과는 참고용이며 의학적·재무적 진단을 대체하지 않습니다.</p>
+      <p class="footer-note" style="margin-top:10px !important;"><a href="../privacy.html" style="color:var(--text-muted);text-decoration:none;">개인정보처리방침</a></p>
+    </div>
+  </footer>
+
+  <script src="../main.js"></script>
+  <script>
+    function showHome() { location.href = '/'; }
+    function showHistory() { location.href = '/'; }
+    document.getElementById('age-birth').setAttribute('max', new Date().toISOString().split('T')[0]);
+  </script>
+</body>
+</html>

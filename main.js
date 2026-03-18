@@ -807,11 +807,13 @@ const TOOLS = {
 };
 
 function showHome() {
+  if (!document.getElementById('home')) { location.href = '/'; return; }
   document.getElementById('home').style.display = '';
   document.getElementById('history-page').style.display = 'none';
   document.getElementById('breadcrumb').style.display = 'none';
   Object.keys(TOOLS).forEach(id => {
-    document.getElementById('tool-' + id).style.display = 'none';
+    const el = document.getElementById('tool-' + id);
+    if (el) el.style.display = 'none';
   });
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }

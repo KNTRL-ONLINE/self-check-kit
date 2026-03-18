@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>돈 성격 테스트 — 나의 금전 유형 알아보기 | 셀프체크킷</title>
+  <meta name="description" content="5문항으로 나의 돈 성격 유형을 알아보세요. 소비형·저축형·균형형·투자형·관계형 중 나는 어떤 유형인지 확인하세요.">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link href="../style.css" rel="stylesheet">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XGW53X6MVT"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XGW53X6MVT');
+  </script>
+  <!-- Google AdSense -->
+  <meta name="google-adsense-account" content="ca-pub-3855392911506926">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3855392911506926" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="logo" onclick="location.href='/'">
+        <span class="logo-main">SELFCHK</span>
+        <span class="logo-sub">셀프체크킷</span>
+      </div>
+      <nav class="breadcrumb" id="breadcrumb" style="display:flex;">
+        <span onclick="location.href='/'">홈</span>
+        <span class="sep">›</span>
+        <span>돈 성격 테스트</span>
+      </nav>
+      <div class="header-actions">
+        <button class="btn-history" onclick="location.href='/'" title="기록 보기"><span>💾 기록</span></button>
+        <div class="lang-toggle">
+          <button id="lang-ko" class="lang-btn active" onclick="setLang('ko')">KO</button>
+          <button id="lang-en" class="lang-btn" onclick="setLang('en')">EN</button>
+        </div>
+        <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="다크/라이트 모드">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <div id="toast" class="toast"></div>
+
+  <div id="share-overlay" class="share-overlay" style="display:none;">
+    <div class="share-overlay-box">
+      <div class="share-overlay-close" onclick="closeShareOverlay()">✕</div>
+      <p class="share-overlay-label">공유된 결과</p>
+      <div id="share-overlay-icon" class="share-result-icon"></div>
+      <div id="share-overlay-value" class="share-result-value"></div>
+      <div id="share-overlay-label" class="share-result-label"></div>
+      <button class="btn-primary" style="margin-top:20px;" onclick="closeShareOverlay()">나도 해보기</button>
+    </div>
+  </div>
+
+  <section id="tool-money" class="tool-section container">
+    <div class="tool-header">
+      <div class="tool-icon-lg">🧠</div>
+      <h1 data-i18n="tool.money.header_name">나의 돈 성격 테스트</h1>
+      <p data-i18n="tool.money.header_desc">5문항으로 나만의 돈을 대하는 성격 유형을 알아보세요.</p>
+    </div>
+    <div id="money-quiz">
+      <div class="quiz-progress">
+        <div class="quiz-progress-bar" id="money-progress-bar"></div>
+      </div>
+      <p class="quiz-step" id="money-step-label"></p>
+      <div class="card quiz-card">
+        <p class="quiz-question" id="money-question"></p>
+        <div class="quiz-options" id="money-options"></div>
+      </div>
+    </div>
+    <div class="result-card" id="money-result" style="display:none;">
+      <div class="money-icon" id="money-icon"></div>
+      <div class="result-value" id="money-type"></div>
+      <div class="result-label" id="money-subtitle"></div>
+      <div class="result-desc" id="money-desc"></div>
+      <div class="money-tips" id="money-tips"></div>
+      <button class="btn-secondary" onclick="resetMoney()" data-i18n="money.reset">다시 테스트하기</button>
+    </div>
+    <div id="money-actions" class="result-actions" style="display:none;"></div>
+  </section>
+
+  <section class="seo-section container">
+    <h2>돈 성격 유형이란?</h2>
+    <p>돈을 대하는 방식은 어릴 때 형성된 금전 습관, 가치관, 성장 환경에 크게 영향을 받습니다. 소비 심리학에서는 개인의 금전 성향을 크게 5가지 유형으로 분류합니다. ▲자유 소비형(Spender): 현재의 즐거움과 경험을 최우선으로 합니다. ▲안전 저축형(Saver): 미래 대비와 안정감을 중시합니다. ▲균형 관리형(Balancer): 소비와 저축의 균형을 자연스럽게 유지합니다.</p>
+    <h3>나머지 유형</h3>
+    <p>▲자산 증식형(Investor): 돈이 돈을 버는 구조에 집중하며 장기적 관점으로 자산을 쌓아갑니다. ▲관계 중심형(Giver): 나눔과 사람과의 관계에서 돈의 의미를 찾습니다. 어떤 유형이 더 낫다는 기준은 없으며, 자신의 성향을 정확히 파악하는 것이 재정 건강의 첫걸음입니다.</p>
+    <h3>테스트 활용법</h3>
+    <p>단 5문항으로 이루어진 짧은 테스트지만, 평소 돈에 대한 태도와 행동 패턴을 돌아보는 계기가 됩니다. 결과에 따른 맞춤 재정 조언을 참고하여 약점을 보완하는 전략을 세워보세요. 가족이나 친구와 함께 테스트하고 서로의 금전 성향을 비교해보는 것도 흥미롭습니다.</p>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>SELFCHK 셀프체크킷</strong> — 무료 자가진단 도구 모음</p>
+      <p class="footer-note">본 사이트의 결과는 참고용이며 의학적·재무적 진단을 대체하지 않습니다.</p>
+      <p class="footer-note" style="margin-top:10px !important;"><a href="../privacy.html" style="color:var(--text-muted);text-decoration:none;">개인정보처리방침</a></p>
+    </div>
+  </footer>
+
+  <script src="../main.js"></script>
+  <script>
+    function showHome() { location.href = '/'; }
+    function showHistory() { location.href = '/'; }
+    initMoney();
+  </script>
+</body>
+</html>

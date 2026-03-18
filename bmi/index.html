@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BMI 계산기 — 무료 체질량지수 계산 | 셀프체크킷</title>
+  <meta name="description" content="키와 몸무게를 입력하면 BMI(체질량지수)와 비만도를 즉시 확인할 수 있습니다. 대한비만학회 기준 적용, 무료.">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link href="../style.css" rel="stylesheet">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XGW53X6MVT"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XGW53X6MVT');
+  </script>
+  <!-- Google AdSense -->
+  <meta name="google-adsense-account" content="ca-pub-3855392911506926">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3855392911506926" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="logo" onclick="location.href='/'">
+        <span class="logo-main">SELFCHK</span>
+        <span class="logo-sub">셀프체크킷</span>
+      </div>
+      <nav class="breadcrumb" id="breadcrumb" style="display:flex;">
+        <span onclick="location.href='/'">홈</span>
+        <span class="sep">›</span>
+        <span>BMI 계산기</span>
+      </nav>
+      <div class="header-actions">
+        <button class="btn-history" onclick="location.href='/'" title="기록 보기"><span>💾 기록</span></button>
+        <div class="lang-toggle">
+          <button id="lang-ko" class="lang-btn active" onclick="setLang('ko')">KO</button>
+          <button id="lang-en" class="lang-btn" onclick="setLang('en')">EN</button>
+        </div>
+        <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="다크/라이트 모드">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <div id="toast" class="toast"></div>
+
+  <div id="share-overlay" class="share-overlay" style="display:none;">
+    <div class="share-overlay-box">
+      <div class="share-overlay-close" onclick="closeShareOverlay()">✕</div>
+      <p class="share-overlay-label">공유된 결과</p>
+      <div id="share-overlay-icon" class="share-result-icon"></div>
+      <div id="share-overlay-value" class="share-result-value"></div>
+      <div id="share-overlay-label" class="share-result-label"></div>
+      <button class="btn-primary" style="margin-top:20px;" onclick="closeShareOverlay()">나도 해보기</button>
+    </div>
+  </div>
+
+  <section id="tool-bmi" class="tool-section container">
+    <div class="tool-header">
+      <div class="tool-icon-lg">⚖️</div>
+      <h1 data-i18n="tool.bmi.name">BMI 계산기</h1>
+      <p data-i18n="tool.bmi.header_desc">체질량지수(BMI)로 내 체중이 정상 범위인지 확인하세요.</p>
+    </div>
+    <div class="card">
+      <div class="form-group">
+        <label data-i18n="bmi.height_label">키 (cm)</label>
+        <input type="number" id="bmi-height" data-i18n-placeholder="bmi.height_placeholder" placeholder="예: 170" min="100" max="250">
+      </div>
+      <div class="form-group">
+        <label data-i18n="bmi.weight_label">몸무게 (kg)</label>
+        <input type="number" id="bmi-weight" data-i18n-placeholder="bmi.weight_placeholder" placeholder="예: 65" min="20" max="300">
+      </div>
+      <button class="btn-primary" onclick="calcBMI()" data-i18n="common.calculate">계산하기</button>
+    </div>
+    <div class="result-card" id="bmi-result" style="display:none;">
+      <div class="result-value" id="bmi-value"></div>
+      <div class="result-label" id="bmi-label"></div>
+      <div class="result-desc" id="bmi-desc"></div>
+      <div class="bmi-scale">
+        <div class="bmi-bar">
+          <div class="bmi-segment s1"><span data-i18n="bmi.underweight">저체중</span><br><small>&lt;18.5</small></div>
+          <div class="bmi-segment s2"><span data-i18n="bmi.normal">정상</span><br><small>18.5–22.9</small></div>
+          <div class="bmi-segment s3"><span data-i18n="bmi.overweight">과체중</span><br><small>23–24.9</small></div>
+          <div class="bmi-segment s4"><span data-i18n="bmi.obese">비만</span><br><small>≥25</small></div>
+        </div>
+        <div class="bmi-pointer-wrap"><div class="bmi-pointer" id="bmi-pointer"></div></div>
+      </div>
+    </div>
+    <div id="bmi-actions" class="result-actions" style="display:none;"></div>
+  </section>
+
+  <section class="seo-section container">
+    <h2>BMI란 무엇인가?</h2>
+    <p>BMI(Body Mass Index, 체질량지수)는 체중(kg)을 신장(m)의 제곱으로 나눈 값으로, 비만 여부를 판단하는 국제 표준 지표입니다. 대한비만학회 기준에 따르면 BMI 18.5 미만은 저체중, 18.5~22.9는 정상 체중, 23~24.9는 과체중, 25 이상은 비만으로 분류됩니다.</p>
+    <h3>BMI 계산법</h3>
+    <p>계산식: BMI = 체중(kg) ÷ 신장(m)². 예를 들어 키 170cm, 몸무게 65kg이라면 BMI = 65 ÷ (1.7 × 1.7) = 22.5로 정상 범위에 해당합니다. 서양 기준(비만 ≥30)과 달리 아시아인은 같은 BMI에서도 체지방률이 높아 WHO 아시아-태평양 기준이 더 엄격하게 적용됩니다.</p>
+    <h3>BMI의 한계</h3>
+    <p>BMI는 근육량과 체지방 분포를 구분하지 못하므로 근육이 많은 운동선수나 노년층에게는 정확도가 낮을 수 있습니다. 보다 정확한 건강 평가를 위해서는 체성분 검사, 허리둘레 측정 등을 함께 활용하고 전문의와 상담하는 것을 권장합니다. BMI는 건강 상태를 파악하기 위한 첫 번째 참고 지표로 활용하세요.</p>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>SELFCHK 셀프체크킷</strong> — 무료 자가진단 도구 모음</p>
+      <p class="footer-note">본 사이트의 결과는 참고용이며 의학적·재무적 진단을 대체하지 않습니다.</p>
+      <p class="footer-note" style="margin-top:10px !important;"><a href="../privacy.html" style="color:var(--text-muted);text-decoration:none;">개인정보처리방침</a></p>
+    </div>
+  </footer>
+
+  <script src="../main.js"></script>
+  <script>
+    function showHome() { location.href = '/'; }
+    function showHistory() { location.href = '/'; }
+  </script>
+</body>
+</html>

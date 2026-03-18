@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>하루 물 섭취량 계산기 — 권장 수분량 확인 | 셀프체크킷</title>
+  <meta name="description" content="몸무게와 활동량에 맞는 하루 권장 물 섭취량을 계산하세요. 수분 부족 증상과 올바른 물 마시는 방법도 안내합니다.">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link href="../style.css" rel="stylesheet">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XGW53X6MVT"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XGW53X6MVT');
+  </script>
+  <!-- Google AdSense -->
+  <meta name="google-adsense-account" content="ca-pub-3855392911506926">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3855392911506926" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="logo" onclick="location.href='/'">
+        <span class="logo-main">SELFCHK</span>
+        <span class="logo-sub">셀프체크킷</span>
+      </div>
+      <nav class="breadcrumb" id="breadcrumb" style="display:flex;">
+        <span onclick="location.href='/'">홈</span>
+        <span class="sep">›</span>
+        <span>하루 물 섭취량</span>
+      </nav>
+      <div class="header-actions">
+        <button class="btn-history" onclick="location.href='/'" title="기록 보기"><span>💾 기록</span></button>
+        <div class="lang-toggle">
+          <button id="lang-ko" class="lang-btn active" onclick="setLang('ko')">KO</button>
+          <button id="lang-en" class="lang-btn" onclick="setLang('en')">EN</button>
+        </div>
+        <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="다크/라이트 모드">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <div id="toast" class="toast"></div>
+
+  <div id="share-overlay" class="share-overlay" style="display:none;">
+    <div class="share-overlay-box">
+      <div class="share-overlay-close" onclick="closeShareOverlay()">✕</div>
+      <p class="share-overlay-label">공유된 결과</p>
+      <div id="share-overlay-icon" class="share-result-icon"></div>
+      <div id="share-overlay-value" class="share-result-value"></div>
+      <div id="share-overlay-label" class="share-result-label"></div>
+      <button class="btn-primary" style="margin-top:20px;" onclick="closeShareOverlay()">나도 해보기</button>
+    </div>
+  </div>
+
+  <section id="tool-water" class="tool-section container">
+    <div class="tool-header">
+      <div class="tool-icon-lg">💧</div>
+      <h1 data-i18n="tool.water.header_name">하루 물 섭취량 계산기</h1>
+      <p data-i18n="tool.water.header_desc">몸무게와 활동 수준에 맞는 하루 권장 수분량을 알려드립니다.</p>
+    </div>
+    <div class="card">
+      <div class="form-group">
+        <label data-i18n="bmi.weight_label">몸무게 (kg)</label>
+        <input type="number" id="water-weight" data-i18n-placeholder="bmi.weight_placeholder" placeholder="예: 65" min="20" max="300">
+      </div>
+      <div class="form-group">
+        <label data-i18n="calorie.activity_label">활동 수준</label>
+        <select id="water-activity">
+          <option value="30" data-i18n="water.activity_sedentary">좌식 / 운동 거의 안 함</option>
+          <option value="35" selected data-i18n="water.activity_moderate">보통 활동</option>
+          <option value="40" data-i18n="water.activity_active">활발한 운동 (주 5회 이상)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label data-i18n="water.env_label">날씨·환경</label>
+        <select id="water-env">
+          <option value="0" data-i18n="water.env_normal">보통 (실내)</option>
+          <option value="300" data-i18n="water.env_hot">더운 날씨 / 야외 활동</option>
+          <option value="500" data-i18n="water.env_very_hot">매우 더운 날씨 / 강도 높은 운동</option>
+        </select>
+      </div>
+      <button class="btn-primary" onclick="calcWater()" data-i18n="common.calculate">계산하기</button>
+    </div>
+    <div class="result-card" id="water-result" style="display:none;">
+      <div class="result-value" id="water-value"></div>
+      <div class="result-label" data-i18n="water.result_label">하루 권장 물 섭취량</div>
+      <div class="water-cups" id="water-cups"></div>
+      <div class="result-desc" id="water-desc"></div>
+      <div class="water-tips">
+        <h3 data-i18n="water.tips_title">💡 수분 섭취 꿀팁</h3>
+        <ul>
+          <li data-i18n="water.tip1">아침 기상 직후 물 한 잔(200ml)으로 하루를 시작하세요</li>
+          <li data-i18n="water.tip2">식사 30분 전 물 한 잔이 소화를 돕습니다</li>
+          <li data-i18n="water.tip3">커피·탄산음료는 수분으로 계산하지 마세요</li>
+          <li data-i18n="water.tip4">소변 색이 연한 노란색이면 적절한 수분 상태입니다</li>
+        </ul>
+      </div>
+    </div>
+    <div id="water-actions" class="result-actions" style="display:none;"></div>
+  </section>
+
+  <section class="seo-section container">
+    <h2>하루에 물을 얼마나 마셔야 할까?</h2>
+    <p>성인 체내 수분 비율은 약 60~70%이며, 하루에도 호흡·땀·소변 등으로 약 2~2.5L의 수분이 빠져나갑니다. 체내 수분이 1%만 부족해도 갈증과 집중력 저하가 나타나고, 2% 이상 부족하면 두통·피로감이 동반됩니다. 일반적인 권장 섭취량은 체중 1kg당 30~40ml입니다.</p>
+    <h3>수분 섭취량 계산법</h3>
+    <p>계산식: 체중(kg) × 활동계수(ml). 예를 들어 70kg 성인이 보통 활동을 한다면 70 × 35 = 2,450ml가 하루 권장량입니다. 활동량이 많거나 기온이 높을수록 추가 수분이 필요하며, 운동 중에는 15~20분마다 150~250ml를 섭취하는 것이 좋습니다.</p>
+    <h3>올바른 물 마시는 방법</h3>
+    <p>커피·녹차·알코올은 이뇨 작용을 하므로 수분 보충량으로 계산하지 않는 것이 좋습니다. 물을 한꺼번에 많이 마시기보다 조금씩 자주 마시는 것이 체내 흡수에 효과적입니다. 소변 색이 연한 노란색을 유지하는 것이 적절한 수분 상태의 가장 간단한 확인 방법입니다. 과도한 수분 섭취도 저나트륨혈증을 유발할 수 있으므로 적정량을 지키세요.</p>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>SELFCHK 셀프체크킷</strong> — 무료 자가진단 도구 모음</p>
+      <p class="footer-note">본 사이트의 결과는 참고용이며 의학적·재무적 진단을 대체하지 않습니다.</p>
+      <p class="footer-note" style="margin-top:10px !important;"><a href="../privacy.html" style="color:var(--text-muted);text-decoration:none;">개인정보처리방침</a></p>
+    </div>
+  </footer>
+
+  <script src="../main.js"></script>
+  <script>
+    function showHome() { location.href = '/'; }
+    function showHistory() { location.href = '/'; }
+  </script>
+</body>
+</html>

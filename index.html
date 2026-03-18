@@ -87,7 +87,7 @@
     </div>
     <div class="tool-grid">
 
-      <div class="tool-card" onclick="showTool('bmi')" data-reveal>
+      <div class="tool-card" onclick="location.href='/bmi/'" data-reveal>
         <div class="tool-icon-svg">
           <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="24" y1="16" x2="24" y2="42"/>
@@ -108,7 +108,7 @@
         <span class="tool-tag" data-i18n="tag.health">건강</span>
       </div>
 
-      <div class="tool-card" onclick="showTool('calorie')" data-reveal>
+      <div class="tool-card" onclick="location.href='/calorie/'" data-reveal>
         <div class="tool-icon-svg">
           <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M24 42 C14 38 11 30 14 21 C15 25 17 27 20 26 C18 20 21 13 24 7 C27 13 32 18 31 27 C35 23 35 17 32 12 C38 19 40 29 34 36 C31 40 28 42 24 42Z"/>
@@ -120,7 +120,7 @@
         <span class="tool-tag" data-i18n="tag.nutrition">영양</span>
       </div>
 
-      <div class="tool-card" onclick="showTool('water')" data-reveal>
+      <div class="tool-card" onclick="location.href='/water/'" data-reveal>
         <div class="tool-icon-svg">
           <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M24 7 L11 28 A13 13 0 0 1 37 28 Z"/>
@@ -133,7 +133,7 @@
         <span class="tool-tag" data-i18n="tag.health">건강</span>
       </div>
 
-      <div class="tool-card" onclick="showTool('age')" data-reveal>
+      <div class="tool-card" onclick="location.href='/age/'" data-reveal>
         <div class="tool-icon-svg">
           <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="9" y1="7" x2="39" y2="7"/>
@@ -147,7 +147,7 @@
         <span class="tool-tag" data-i18n="tag.fun">재미</span>
       </div>
 
-      <div class="tool-card" onclick="showTool('burnout')" data-reveal>
+      <div class="tool-card" onclick="location.href='/burnout/'" data-reveal>
         <div class="tool-icon-svg">
           <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M8 36 A16 16 0 0 1 40 36"/>
@@ -166,7 +166,7 @@
         <span class="tool-tag" data-i18n="tag.mental">멘탈</span>
       </div>
 
-      <div class="tool-card" onclick="showTool('salary')" data-reveal>
+      <div class="tool-card" onclick="location.href='/salary-rank/'" data-reveal>
         <div class="tool-icon-svg">
           <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="9" y1="8" x2="9" y2="40"/>
@@ -182,7 +182,7 @@
         <span class="tool-tag" data-i18n="tag.finance">재무</span>
       </div>
 
-      <div class="tool-card" onclick="showTool('money')" data-reveal>
+      <div class="tool-card" onclick="location.href='/money-type/'" data-reveal>
         <div class="tool-icon-svg">
           <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <polygon points="24,6 40,20 24,42 8,20"/>
@@ -202,259 +202,6 @@
 
     </div>
   </main>
-
-  <!-- ─── 1. BMI 계산기 ─── -->
-  <section id="tool-bmi" class="tool-section container" style="display:none;">
-    <div class="tool-header">
-      <div class="tool-icon-lg">⚖️</div>
-      <h1 data-i18n="tool.bmi.name">BMI 계산기</h1>
-      <p data-i18n="tool.bmi.header_desc">체질량지수(BMI)로 내 체중이 정상 범위인지 확인하세요.</p>
-    </div>
-    <div class="card">
-      <div class="form-group">
-        <label data-i18n="bmi.height_label">키 (cm)</label>
-        <input type="number" id="bmi-height" data-i18n-placeholder="bmi.height_placeholder" placeholder="예: 170" min="100" max="250">
-      </div>
-      <div class="form-group">
-        <label data-i18n="bmi.weight_label">몸무게 (kg)</label>
-        <input type="number" id="bmi-weight" data-i18n-placeholder="bmi.weight_placeholder" placeholder="예: 65" min="20" max="300">
-      </div>
-      <button class="btn-primary" onclick="calcBMI()" data-i18n="common.calculate">계산하기</button>
-    </div>
-    <div class="result-card" id="bmi-result" style="display:none;">
-      <div class="result-value" id="bmi-value"></div>
-      <div class="result-label" id="bmi-label"></div>
-      <div class="result-desc" id="bmi-desc"></div>
-      <div class="bmi-scale">
-        <div class="bmi-bar">
-          <div class="bmi-segment s1"><span data-i18n="bmi.underweight">저체중</span><br><small>&lt;18.5</small></div>
-          <div class="bmi-segment s2"><span data-i18n="bmi.normal">정상</span><br><small>18.5–22.9</small></div>
-          <div class="bmi-segment s3"><span data-i18n="bmi.overweight">과체중</span><br><small>23–24.9</small></div>
-          <div class="bmi-segment s4"><span data-i18n="bmi.obese">비만</span><br><small>≥25</small></div>
-        </div>
-        <div class="bmi-pointer-wrap"><div class="bmi-pointer" id="bmi-pointer"></div></div>
-      </div>
-    </div>
-    <div id="bmi-actions" class="result-actions" style="display:none;"></div>
-  </section>
-
-  <!-- ─── 2. 칼로리 계산기 ─── -->
-  <section id="tool-calorie" class="tool-section container" style="display:none;">
-    <div class="tool-header">
-      <div class="tool-icon-lg">🔥</div>
-      <h1 data-i18n="tool.calorie.name">칼로리 계산기</h1>
-      <p data-i18n="tool.calorie.header_desc">Mifflin-St Jeor 공식으로 하루 권장 칼로리를 계산합니다.</p>
-    </div>
-    <div class="card">
-      <div class="form-group">
-        <label data-i18n="calorie.gender_label">성별</label>
-        <div class="radio-group">
-          <label class="radio-label"><input type="radio" name="cal-gender" value="male" checked> <span data-i18n="common.male">남성</span></label>
-          <label class="radio-label"><input type="radio" name="cal-gender" value="female"> <span data-i18n="common.female">여성</span></label>
-        </div>
-      </div>
-      <div class="form-group">
-        <label data-i18n="calorie.age_label">나이</label>
-        <input type="number" id="cal-age" data-i18n-placeholder="calorie.age_placeholder" placeholder="예: 28" min="10" max="100">
-      </div>
-      <div class="form-group">
-        <label data-i18n="bmi.height_label">키 (cm)</label>
-        <input type="number" id="cal-height" data-i18n-placeholder="bmi.height_placeholder" placeholder="예: 170" min="100" max="250">
-      </div>
-      <div class="form-group">
-        <label data-i18n="bmi.weight_label">몸무게 (kg)</label>
-        <input type="number" id="cal-weight" data-i18n-placeholder="bmi.weight_placeholder" placeholder="예: 65" min="20" max="300">
-      </div>
-      <div class="form-group">
-        <label data-i18n="calorie.activity_label">활동 수준</label>
-        <select id="cal-activity">
-          <option value="1.2" data-i18n="calorie.activity_sedentary">거의 안 움직임 (좌식 생활)</option>
-          <option value="1.375" data-i18n="calorie.activity_light">가벼운 활동 (주 1–3회 운동)</option>
-          <option value="1.55" selected data-i18n="calorie.activity_moderate">보통 활동 (주 3–5회 운동)</option>
-          <option value="1.725" data-i18n="calorie.activity_active">활발한 활동 (주 6–7회 운동)</option>
-          <option value="1.9" data-i18n="calorie.activity_very_active">매우 활발 (운동선수급)</option>
-        </select>
-      </div>
-      <button class="btn-primary" onclick="calcCalorie()" data-i18n="common.calculate">계산하기</button>
-    </div>
-    <div class="result-card" id="calorie-result" style="display:none;">
-      <div class="result-value" id="calorie-tdee"></div>
-      <div class="result-label" data-i18n="calorie.tdee_label">하루 유지 칼로리 (TDEE)</div>
-      <div class="calorie-goals">
-        <div class="calorie-goal-item">
-          <span class="goal-label" data-i18n="calorie.lose">체중 감량</span>
-          <span class="goal-value" id="calorie-lose"></span>
-        </div>
-        <div class="calorie-goal-item highlight">
-          <span class="goal-label" data-i18n="calorie.maintain">유지</span>
-          <span class="goal-value" id="calorie-maintain"></span>
-        </div>
-        <div class="calorie-goal-item">
-          <span class="goal-label" data-i18n="calorie.gain">체중 증가</span>
-          <span class="goal-value" id="calorie-gain"></span>
-        </div>
-      </div>
-      <p class="result-note"><span data-i18n="calorie.bmr_note">기초대사량(BMR):</span> <strong id="calorie-bmr"></strong> kcal</p>
-    </div>
-    <div id="calorie-actions" class="result-actions" style="display:none;"></div>
-  </section>
-
-  <!-- ─── 3. 물 섭취량 계산기 ─── -->
-  <section id="tool-water" class="tool-section container" style="display:none;">
-    <div class="tool-header">
-      <div class="tool-icon-lg">💧</div>
-      <h1 data-i18n="tool.water.header_name">하루 물 섭취량 계산기</h1>
-      <p data-i18n="tool.water.header_desc">몸무게와 활동 수준에 맞는 하루 권장 수분량을 알려드립니다.</p>
-    </div>
-    <div class="card">
-      <div class="form-group">
-        <label data-i18n="bmi.weight_label">몸무게 (kg)</label>
-        <input type="number" id="water-weight" data-i18n-placeholder="bmi.weight_placeholder" placeholder="예: 65" min="20" max="300">
-      </div>
-      <div class="form-group">
-        <label data-i18n="calorie.activity_label">활동 수준</label>
-        <select id="water-activity">
-          <option value="30" data-i18n="water.activity_sedentary">좌식 / 운동 거의 안 함</option>
-          <option value="35" selected data-i18n="water.activity_moderate">보통 활동</option>
-          <option value="40" data-i18n="water.activity_active">활발한 운동 (주 5회 이상)</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label data-i18n="water.env_label">날씨·환경</label>
-        <select id="water-env">
-          <option value="0" data-i18n="water.env_normal">보통 (실내)</option>
-          <option value="300" data-i18n="water.env_hot">더운 날씨 / 야외 활동</option>
-          <option value="500" data-i18n="water.env_very_hot">매우 더운 날씨 / 강도 높은 운동</option>
-        </select>
-      </div>
-      <button class="btn-primary" onclick="calcWater()" data-i18n="common.calculate">계산하기</button>
-    </div>
-    <div class="result-card" id="water-result" style="display:none;">
-      <div class="result-value" id="water-value"></div>
-      <div class="result-label" data-i18n="water.result_label">하루 권장 물 섭취량</div>
-      <div class="water-cups" id="water-cups"></div>
-      <div class="result-desc" id="water-desc"></div>
-      <div class="water-tips">
-        <h3 data-i18n="water.tips_title">💡 수분 섭취 꿀팁</h3>
-        <ul>
-          <li data-i18n="water.tip1">아침 기상 직후 물 한 잔(200ml)으로 하루를 시작하세요</li>
-          <li data-i18n="water.tip2">식사 30분 전 물 한 잔이 소화를 돕습니다</li>
-          <li data-i18n="water.tip3">커피·탄산음료는 수분으로 계산하지 마세요</li>
-          <li data-i18n="water.tip4">소변 색이 연한 노란색이면 적절한 수분 상태입니다</li>
-        </ul>
-      </div>
-    </div>
-    <div id="water-actions" class="result-actions" style="display:none;"></div>
-  </section>
-
-  <!-- ─── 4. 나이·생존 일수 계산기 ─── -->
-  <section id="tool-age" class="tool-section container" style="display:none;">
-    <div class="tool-header">
-      <div class="tool-icon-lg">🗓️</div>
-      <h1 data-i18n="tool.age.header_name">나이·생존 일수 계산기</h1>
-      <p data-i18n="tool.age.header_desc">태어난 날부터 지금까지 얼마나 살았는지 숫자로 확인해보세요.</p>
-    </div>
-    <div class="card">
-      <div class="form-group">
-        <label data-i18n="age.birth_label">생년월일</label>
-        <input type="date" id="age-birth" max="">
-      </div>
-      <button class="btn-primary" onclick="calcAge()" data-i18n="common.calculate">계산하기</button>
-    </div>
-    <div class="result-card" id="age-result" style="display:none;">
-      <div class="result-value" id="age-years"></div>
-      <div class="result-label" id="age-label"></div>
-      <div class="age-stats" id="age-stats"></div>
-    </div>
-    <div id="age-actions" class="result-actions" style="display:none;"></div>
-  </section>
-
-  <!-- ─── 5. 번아웃 자가진단 ─── -->
-  <section id="tool-burnout" class="tool-section container" style="display:none;">
-    <div class="tool-header">
-      <div class="tool-icon-lg">🧨</div>
-      <h1 data-i18n="tool.burnout.name">번아웃 자가진단</h1>
-      <p data-i18n="tool.burnout.header_desc">최근 2주를 기준으로 솔직하게 답해주세요.</p>
-    </div>
-    <div id="burnout-quiz">
-      <div class="quiz-progress">
-        <div class="quiz-progress-bar" id="burnout-progress-bar"></div>
-      </div>
-      <p class="quiz-step" id="burnout-step-label"></p>
-      <div class="card quiz-card">
-        <p class="quiz-question" id="burnout-question"></p>
-        <div class="quiz-options" id="burnout-options"></div>
-      </div>
-    </div>
-    <div class="result-card" id="burnout-result" style="display:none;">
-      <div class="burnout-icon" id="burnout-icon"></div>
-      <div class="result-value" id="burnout-level"></div>
-      <div class="result-desc" id="burnout-desc"></div>
-      <div class="burnout-tips" id="burnout-tips"></div>
-      <button class="btn-secondary" onclick="resetBurnout()" data-i18n="burnout.reset">다시 진단하기</button>
-    </div>
-    <div id="burnout-actions" class="result-actions" style="display:none;"></div>
-  </section>
-
-  <!-- ─── 6. 연봉 상위 % ─── -->
-  <section id="tool-salary" class="tool-section container" style="display:none;">
-    <div class="tool-header">
-      <div class="tool-icon-lg">💰</div>
-      <h1 data-i18n="tool.salary.name">연봉 상위 몇 %</h1>
-      <p><span data-i18n="tool.salary.header_desc">내 연봉이 한국 근로소득자 중 상위 몇 %인지 확인하세요.</span><br><small data-i18n="tool.salary.header_note">국세청 근로소득 통계(2023년 기준) 데이터를 사용합니다.</small></p>
-    </div>
-    <div class="card">
-      <div class="form-group">
-        <label data-i18n="salary.input_label">연봉 (세전, 만 원)</label>
-        <input type="number" id="salary-input" data-i18n-placeholder="salary.input_placeholder" placeholder="예: 4000" min="0">
-      </div>
-      <button class="btn-primary" onclick="calcSalary()" data-i18n="common.calculate">계산하기</button>
-    </div>
-    <div class="result-card" id="salary-result" style="display:none;">
-      <div class="result-value" id="salary-top"></div>
-      <div class="result-label" id="salary-label"></div>
-      <div class="salary-bar-wrap">
-        <div class="salary-bar">
-          <div class="salary-fill" id="salary-fill"></div>
-          <div class="salary-marker" id="salary-marker"></div>
-        </div>
-        <div class="salary-bar-labels">
-          <span data-i18n="salary.bar_low">하위</span><span data-i18n="salary.bar_mid">중위</span><span data-i18n="salary.bar_high">상위</span>
-        </div>
-      </div>
-      <div class="result-desc" id="salary-desc"></div>
-      <p class="result-note" data-i18n="salary.note">전국 근로소득자 약 2,000만 명 기준 / 참고용 수치입니다.</p>
-    </div>
-    <div id="salary-actions" class="result-actions" style="display:none;"></div>
-  </section>
-
-  <!-- ─── 7. 돈 성격 테스트 ─── -->
-  <section id="tool-money" class="tool-section container" style="display:none;">
-    <div class="tool-header">
-      <div class="tool-icon-lg">🧠</div>
-      <h1 data-i18n="tool.money.header_name">나의 돈 성격 테스트</h1>
-      <p data-i18n="tool.money.header_desc">5문항으로 나만의 돈을 대하는 성격 유형을 알아보세요.</p>
-    </div>
-    <div id="money-quiz">
-      <div class="quiz-progress">
-        <div class="quiz-progress-bar" id="money-progress-bar"></div>
-      </div>
-      <p class="quiz-step" id="money-step-label"></p>
-      <div class="card quiz-card">
-        <p class="quiz-question" id="money-question"></p>
-        <div class="quiz-options" id="money-options"></div>
-      </div>
-    </div>
-    <div class="result-card" id="money-result" style="display:none;">
-      <div class="money-icon" id="money-icon"></div>
-      <div class="result-value" id="money-type"></div>
-      <div class="result-label" id="money-subtitle"></div>
-      <div class="result-desc" id="money-desc"></div>
-      <div class="money-tips" id="money-tips"></div>
-      <button class="btn-secondary" onclick="resetMoney()" data-i18n="money.reset">다시 테스트하기</button>
-    </div>
-    <div id="money-actions" class="result-actions" style="display:none;"></div>
-  </section>
 
   <!-- ─── 푸터 ─── -->
   <footer class="site-footer">
