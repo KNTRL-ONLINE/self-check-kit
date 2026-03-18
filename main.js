@@ -254,8 +254,6 @@ const TRANSLATIONS = {
     'toast.link_copied': '링크가 복사됐어요!',
     'toast.history_saved': '기록에 저장됐어요!',
     'toast.history_cleared': '전체 기록이 삭제됐어요.',
-    // 사용자 수
-    'usage.count': '{0}명이 사용했어요',
     // 알림
     'alert.bmi_invalid': '키와 몸무게를 올바르게 입력해주세요.',
     'alert.calorie_invalid': '모든 항목을 입력해주세요.',
@@ -513,8 +511,6 @@ const TRANSLATIONS = {
     'toast.link_copied': 'Link copied!',
     'toast.history_saved': 'Saved to history!',
     'toast.history_cleared': 'All history cleared.',
-    // Usage count
-    'usage.count': '{0} people used this',
     // Alerts
     'alert.bmi_invalid': 'Please enter valid height and weight.',
     'alert.calorie_invalid': 'Please fill in all fields.',
@@ -599,29 +595,6 @@ function showToast(msg) {
   toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
 }
 
-/* ─── 사용 횟수 카운터 ─── */
-const TOOL_IDS = ['bmi', 'calorie', 'water', 'age', 'burnout', 'salary', 'money'];
-
-function getUsageCount(toolId) {
-  return parseInt(localStorage.getItem('selfchk_count_' + toolId) || '0', 10);
-}
-
-function incrementUsage(toolId) {
-  const local = parseInt(localStorage.getItem('selfchk_count_' + toolId) || '0', 10);
-  localStorage.setItem('selfchk_count_' + toolId, local + 1);
-  renderUsageCount(toolId);
-}
-
-function renderUsageCount(toolId) {
-  const el = document.getElementById('usage-' + toolId);
-  if (!el) return;
-  const count = getUsageCount(toolId).toLocaleString();
-  el.textContent = t('usage.count', count);
-}
-
-function renderAllUsageCounts() {
-  TOOL_IDS.forEach(id => renderUsageCount(id));
-}
 
 /* ─── 결과 히스토리 ─── */
 const HISTORY_KEY = 'selfchk_history';
@@ -910,7 +883,7 @@ function calcBMI() {
   r.style.display = '';
   r.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-  incrementUsage('bmi');
+
   showResultActions(r, 'bmi', { icon: '⚖️', value: `BMI ${bmiRound}`, label });
 }
 
@@ -939,7 +912,7 @@ function calcCalorie() {
   r.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
   const label = t('calorie.tdee_label');
-  incrementUsage('calorie');
+
   showResultActions(r, 'calorie', { icon: '🔥', value: tdee.toLocaleString() + ' kcal', label });
 }
 
@@ -968,7 +941,7 @@ function calcWater() {
   r.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
   const label = t('water.result_label');
-  incrementUsage('water');
+
   showResultActions(r, 'water', { icon: '💧', value: valueStr, label });
 }
 
@@ -1020,7 +993,7 @@ function calcAge() {
   r.style.display = '';
   r.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-  incrementUsage('age');
+
   showResultActions(r, 'age', { icon: '🗓️', value: yearsLabel, label: birthLabel });
 }
 
@@ -1121,7 +1094,7 @@ function showBurnoutResult() {
   r.style.display = '';
   r.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-  incrementUsage('burnout');
+
   showResultActions(r, 'burnout', { icon: res.icon, value: res.level, label: t('tool.burnout.name') });
 }
 
@@ -1171,7 +1144,7 @@ function calcSalary() {
   r.style.display = '';
   r.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-  incrementUsage('salary');
+
   showResultActions(r, 'salary', { icon: '💰', value: topLabel, label: valLabel });
 }
 
@@ -1325,7 +1298,7 @@ function showMoneyResult() {
   r.style.display = '';
   r.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-  incrementUsage('money');
+
   showResultActions(r, 'money', { icon: res.icon, value: res.type, label: res.subtitle });
 }
 
@@ -1378,7 +1351,6 @@ function initScrollReveal() {
   document.getElementById('lang-en').classList.toggle('active', currentLang === 'en');
   document.documentElement.lang = currentLang === 'ko' ? 'ko' : 'en';
   applyI18n();
-  renderAllUsageCounts();
   checkShareHash();
   initIntro();
   initScrollReveal();
